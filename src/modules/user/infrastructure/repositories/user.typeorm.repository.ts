@@ -8,26 +8,34 @@ import { UserTypeOrmEntity } from '../persistence/user.typeorm.entity';
 export class UserTypeOrmRepository implements UserRepository {
   constructor(
     @InjectRepository(UserTypeOrmEntity)
-    private readonly repository: Repository<UserTypeOrmRepository>,
+    private readonly repository: Repository<UserTypeOrmEntity>,
   ) {}
 
-  public findAll(): Promise<UserEntity[]> {
-    throw new Error('Method not implemented.');
+  public async findAll(): Promise<UserEntity[]> {
+    const entities = await this.repository.find();
+    return entities.map((entity) => this.toDomain(entity));
   }
 
-  public findById(id: string): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  public async findById(id: string): Promise<UserEntity | null> {
+    const entity = await this.repository.findOne({ where: { id: id } });
+    return entity ? this.toDomain(entity) : null;
   }
 
-  public findByEmail(email: string): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  public async findByEmail(email: string): Promise<UserEntity | null> {
+    const entity = await this.repository.findOne({ where: { email: email } });
+    return entity ? this.toDomain(entity) : null;
   }
 
-  public update(id: string, payload: UpdateUserPayload): Promise<UserEntity> {
-    throw new Error('Method not implemented.');
+  public async update(id: string, payload: UpdateUserPayload): Promise<void> {
+    await this.repository.update(id, payload);
   }
 
-  public delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
+  }
+
+  private toDomain(entity: UserTypeOrmEntity): UserEntity {
+    const { id, name, email, password, role } = entity;
+    return new UserEntity(id, name, email, password, role);
   }
 }
