@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/user.typeorm.entity';
 import { UserModule } from './modules/user/user.module';
+import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from './modules/user/user.module';
       }),
     }),
     UserModule,
+    CryptographyModule,
   ],
   controllers: [],
   providers: [],
