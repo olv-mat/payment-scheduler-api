@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../../domain/entities/user.entity';
+import { UserNotFoundError } from '../../domain/errors/user-not-found.error';
 import { UserFacade } from '../user.facade';
 
 @Injectable()
@@ -8,7 +9,7 @@ export class FindUserByIdUseCase {
 
   public async execute(id: string): Promise<UserEntity> {
     const entity = await this.facade.findById(id);
-    if (!entity) throw new NotFoundException('User not found');
+    if (!entity) throw new UserNotFoundError();
     return entity;
   }
 }
