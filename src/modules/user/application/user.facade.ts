@@ -9,4 +9,8 @@ export class UserFacade {
   public findAll(): Promise<UserEntity[]> {
     return this.repository.findAll();
   }
+
+  public findById(id: string): Promise<UserEntity | null> {
+    return this.repository.findById(id);
+  }
 }
