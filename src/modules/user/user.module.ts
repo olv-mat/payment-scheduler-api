@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FindAllUsersUseCase } from './application/use-cases/find-all-users.usecase';
+import { FindUserByIdUseCase } from './application/use-cases/find-user-by-id.usecase';
 import { UserFacade } from './application/user.facade';
 import { UserRepository } from './domain/repositories/user.repository';
 import { UserTypeOrmEntity } from './infrastructure/persistence/user.typeorm.entity';
@@ -12,6 +13,7 @@ import { UserController } from './presentation/user.controller';
   controllers: [UserController],
   providers: [
     FindAllUsersUseCase,
+    FindUserByIdUseCase,
     UserFacade,
     {
       provide: UserRepository,
