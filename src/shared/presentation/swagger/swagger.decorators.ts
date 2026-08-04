@@ -1,4 +1,8 @@
-import { ApiInternalServerErrorResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 
 export const SwaggerOperation = (
   summary: string,
@@ -7,6 +11,18 @@ export const SwaggerOperation = (
   return description
     ? ApiOperation({ summary: summary, description: description })
     : ApiOperation({ summary: summary });
+};
+
+export const SwaggerNotFound = (message: string) => {
+  return ApiNotFoundResponse({
+    schema: {
+      example: {
+        message: message,
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  });
 };
 
 export const SwaggerInternalServerError = () => {
