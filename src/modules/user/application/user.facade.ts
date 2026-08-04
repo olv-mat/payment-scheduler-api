@@ -13,4 +13,8 @@ export class UserFacade {
   public findById(id: string): Promise<UserEntity | null> {
     return this.repository.findById(id);
   }
+
+  public findByEmail(email: string): Promise<UserEntity | null> {
+    return this.repository.findByEmail(email);
+  }
 }
