@@ -2,6 +2,7 @@ import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
 import {
   SwaggerInternalServerError,
+  SwaggerNotFound,
   SwaggerOperation,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 import { FindAllUsersUseCase } from '../application/use-cases/find-all-users.usecase';
@@ -25,6 +26,9 @@ export class UserController {
   }
 
   @Get(':id')
+  @SwaggerOperation('Retrieve a specific user')
+  @SwaggerNotFound('User not found')
+  @SwaggerInternalServerError()
   public async findOne(@Param() { id }: IdDto): Promise<UserResponseDto> {
     try {
       const entity = await this.findByIdUseCase.execute(id);
