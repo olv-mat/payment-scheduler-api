@@ -10,6 +10,7 @@ import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-respons
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
 import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
 import {
+  SwaggerBadRequest,
   SwaggerInternalServerError,
   SwaggerNotFound,
   SwaggerOperation,
@@ -54,6 +55,9 @@ export class UserController {
   }
 
   @Patch(':id')
+  @SwaggerOperation('Update a specific user')
+  @SwaggerBadRequest('At least one field must be provided')
+  @SwaggerNotFound('User not Found')
   public async update(
     @Param() { id }: IdDto,
     @Body(new AtLeastOneFieldPipe()) dto: UpdateUserDto,
