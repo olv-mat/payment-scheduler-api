@@ -1,4 +1,5 @@
 import {
+  ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
@@ -11,6 +12,18 @@ export const SwaggerOperation = (
   return description
     ? ApiOperation({ summary: summary, description: description })
     : ApiOperation({ summary: summary });
+};
+
+export const SwaggerBadRequest = (message: string) => {
+  return ApiBadRequestResponse({
+    schema: {
+      example: {
+        message: message,
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
+  });
 };
 
 export const SwaggerNotFound = (message: string) => {
