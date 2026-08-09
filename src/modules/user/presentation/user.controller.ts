@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -15,6 +16,7 @@ import {
   SwaggerNotFound,
   SwaggerOperation,
 } from 'src/shared/presentation/swagger/swagger.decorators';
+import { DeleteUserUseCase } from '../application/use-cases/delete-user.usecase';
 import { FindAllUsersUseCase } from '../application/use-cases/find-all-users.usecase';
 import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.usecase';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
@@ -28,6 +30,7 @@ export class UserController {
     private readonly findAllUseCase: FindAllUsersUseCase,
     private readonly findByIdUseCase: FindUserByIdUseCase,
     private readonly updateUseCase: UpdateUserUseCase,
+    private readonly deleteUseCase: DeleteUserUseCase,
   ) {}
 
   @Get()
@@ -65,6 +68,19 @@ export class UserController {
     try {
       await this.updateUseCase.execute(id, dto);
       return DefaultResponseDto.create('User updated successfully');
+    } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        throw new NotFoundException(error.message);
+      }
+      throw error;
+    }
+  }
+
+  @Delete(':id')
+  public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {
+    try {
+      await this.deleteUseCase.execute(id);
+      return DefaultResponseDto.create('User deleted successfully');
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new NotFoundException(error.message);

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DeleteUserUseCase } from './application/use-cases/delete-user.usecase';
 import { FindAllUsersUseCase } from './application/use-cases/find-all-users.usecase';
 import { FindUserByEmailUseCase } from './application/use-cases/find-user-by-email.usecase';
 import { FindUserByIdUseCase } from './application/use-cases/find-user-by-id.usecase';
@@ -18,6 +19,7 @@ import { UserController } from './presentation/user.controller';
     FindUserByIdUseCase,
     FindUserByEmailUseCase,
     UpdateUserUseCase,
+    DeleteUserUseCase,
     UserFacade,
     {
       provide: UserRepository,

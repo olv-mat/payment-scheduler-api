@@ -19,7 +19,11 @@ export class UserFacade {
     return this.repository.findByEmail(email);
   }
 
-  public async update(id: string, payload: UpdateUserPayload): Promise<void> {
+  public update(id: string, payload: UpdateUserPayload): Promise<void> {
     return this.repository.update(id, payload);
+  }
+
+  public delete(id: string): Promise<void> {
+    return this.repository.delete(id);
   }
 }
