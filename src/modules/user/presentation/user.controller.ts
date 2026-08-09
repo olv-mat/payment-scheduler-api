@@ -61,6 +61,7 @@ export class UserController {
   @SwaggerOperation('Update a specific user')
   @SwaggerBadRequest('At least one field must be provided')
   @SwaggerNotFound('User not Found')
+  @SwaggerInternalServerError()
   public async update(
     @Param() { id }: IdDto,
     @Body(new AtLeastOneFieldPipe()) dto: UpdateUserDto,
@@ -77,6 +78,9 @@ export class UserController {
   }
 
   @Delete(':id')
+  @SwaggerOperation('Delete a specific user')
+  @SwaggerNotFound('User not Found')
+  @SwaggerInternalServerError()
   public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {
     try {
       await this.deleteUseCase.execute(id);
