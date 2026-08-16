@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/user.typeorm.entity';
 import { UserModule } from './modules/user/user.module';
 import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
+import { AuthenticationModule } from './modules/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CryptographyModule } from './shared/infrastructure/cryptography/cryptog
     }),
     UserModule,
     CryptographyModule,
+    AuthenticationModule,
   ],
   controllers: [],
   providers: [],
