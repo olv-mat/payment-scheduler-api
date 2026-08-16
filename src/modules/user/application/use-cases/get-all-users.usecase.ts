@@ -3,10 +3,10 @@ import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 
 @Injectable()
-export class FindUserByEmailUseCase {
+export class GetAllUsersUseCase {
   constructor(private readonly repository: UserRepository) {}
 
-  public execute(email: string): Promise<UserEntity | null> {
-    return this.repository.findByEmail(email);
+  public execute(): Promise<UserEntity[]> {
+    return this.repository.getAll();
   }
 }
