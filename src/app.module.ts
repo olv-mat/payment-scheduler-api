@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthenticationModule } from './modules/authentication/authentication.module';
 import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/user.typeorm.entity';
 import { UserModule } from './modules/user/user.module';
+import { CredentialModule } from './shared/infrastructure/credential/credential.module';
 import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
-import { AuthenticationModule } from './modules/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
       }),
     }),
     UserModule,
+    CredentialModule,
     CryptographyModule,
     AuthenticationModule,
   ],
