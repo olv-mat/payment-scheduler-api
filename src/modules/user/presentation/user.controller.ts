@@ -17,8 +17,8 @@ import {
   SwaggerOperation,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 import { DeleteUserUseCase } from '../application/use-cases/delete-user.usecase';
-import { FindAllUsersUseCase } from '../application/use-cases/find-all-users.usecase';
 import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.usecase';
+import { GetAllUsersUseCase } from '../application/use-cases/get-all-users.usecase';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
 import { UserNotFoundError } from '../domain/errors/user-not-found.error';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -27,7 +27,7 @@ import { UserResponseDto } from './dtos/user-response.dto';
 @Controller('users')
 export class UserController {
   constructor(
-    private readonly findAllUseCase: FindAllUsersUseCase,
+    private readonly getAllUseCase: GetAllUsersUseCase,
     private readonly findByIdUseCase: FindUserByIdUseCase,
     private readonly updateUseCase: UpdateUserUseCase,
     private readonly deleteUseCase: DeleteUserUseCase,
@@ -36,8 +36,8 @@ export class UserController {
   @Get()
   @SwaggerOperation('Retrieve all users')
   @SwaggerInternalServerError()
-  public async findAll(): Promise<UserResponseDto[]> {
-    const entities = await this.findAllUseCase.execute();
+  public async getAll(): Promise<UserResponseDto[]> {
+    const entities = await this.getAllUseCase.execute();
     return UserResponseDto.fromEntities(entities);
   }
 
