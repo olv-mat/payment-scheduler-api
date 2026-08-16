@@ -9,5 +9,5 @@ export abstract class UserRepository {
   public abstract create(payload: CreateUserPayload): Promise<void>;
   public abstract update(id: string, payload: UpdateUserPayload): Promise<void>;
   public abstract delete(id: string): Promise<void>;
-  public abstract checkEmailExists(email: string): Promise<boolean>;
+  public abstract emailExists(email: string): Promise<boolean>;
 }

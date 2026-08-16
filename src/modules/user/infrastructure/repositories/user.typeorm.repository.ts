@@ -38,7 +38,7 @@ export class UserTypeOrmRepository implements UserRepository {
     await this.repository.delete(id);
   }
 
-  public checkEmailExists(email: string): Promise<boolean> {
+  public emailExists(email: string): Promise<boolean> {
     return this.repository.exists({ where: { email: email } });
   }
 
