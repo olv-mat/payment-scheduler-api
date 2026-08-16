@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -12,6 +13,7 @@ import { IdDto } from 'src/shared/presentation/dtos/id.dto';
 import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
 import {
   SwaggerBadRequest,
+  SwaggerConflict,
   SwaggerInternalServerError,
   SwaggerNotFound,
   SwaggerOperation,
@@ -20,6 +22,7 @@ import { DeleteUserUseCase } from '../application/use-cases/delete-user.usecase'
 import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.usecase';
 import { GetAllUsersUseCase } from '../application/use-cases/get-all-users.usecase';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
+import { EmailAlreadyInUseError } from '../domain/errors/email-already-in-use.error';
 import { UserNotFoundError } from '../domain/errors/user-not-found.error';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
@@ -61,6 +64,7 @@ export class UserController {
   @SwaggerOperation('Update a specific user')
   @SwaggerBadRequest('At least one field must be provided')
   @SwaggerNotFound('User not Found')
+  @SwaggerConflict('Email already in use')
   @SwaggerInternalServerError()
   public async update(
     @Param() { id }: IdDto,
@@ -72,6 +76,9 @@ export class UserController {
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new NotFoundException(error.message);
+      }
+      if (error instanceof EmailAlreadyInUseError) {
+        throw new ConflictException(error.message);
       }
       throw error;
     }

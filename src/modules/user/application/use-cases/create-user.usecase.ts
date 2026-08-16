@@ -13,7 +13,7 @@ export class CreateUserUseCase {
 
   public async execute(payload: CreateUserPayload): Promise<void> {
     const { email, password } = payload;
-    const exists = await this.repository.checkEmailExists(email);
+    const exists = await this.repository.emailExists(email);
     if (exists) throw new EmailAlreadyInUseError();
     await this.repository.create({
       ...payload,
