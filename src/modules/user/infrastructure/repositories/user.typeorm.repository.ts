@@ -26,8 +26,9 @@ export class UserTypeOrmRepository implements UserRepository {
     return entity ? this.toDomain(entity) : null;
   }
 
-  public async create(payload: CreateUserPayload): Promise<void> {
-    await this.repository.save(payload);
+  public async create(payload: CreateUserPayload): Promise<UserEntity> {
+    const entity = await this.repository.save(payload);
+    return this.toDomain(entity);
   }
 
   public async update(id: string, payload: UpdateUserPayload): Promise<void> {
@@ -38,7 +39,7 @@ export class UserTypeOrmRepository implements UserRepository {
     await this.repository.delete(id);
   }
 
-  public emailExists(email: string): Promise<boolean> {
+  public checkByEmail(email: string): Promise<boolean> {
     return this.repository.exists({ where: { email: email } });
   }
 
