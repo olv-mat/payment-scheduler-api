@@ -17,8 +17,9 @@ export class UpdateUserUseCase {
     const entity = await this.repository.findById(id);
     if (!entity) throw new UserNotFoundError();
     if (email && email !== entity.email) {
-      const exists = await this.repository.emailExists(email);
-      if (exists) throw new EmailAlreadyInUseError();
+      if (await this.repository.checkByEmail(email)) {
+        throw new EmailAlreadyInUseError();
+      }
     }
     await this.repository.update(entity.id, {
       ...payload,
