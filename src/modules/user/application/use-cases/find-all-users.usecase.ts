@@ -3,10 +3,10 @@ import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 
 @Injectable()
-export class GetAllUsersUseCase {
-  constructor(private readonly repository: UserRepository) {}
+export class FindAllUsersUseCase {
+  constructor(private readonly userRepository: UserRepository) {}
 
   public execute(): Promise<UserEntity[]> {
-    return this.repository.getAll();
+    return this.userRepository.findAll();
   }
 }

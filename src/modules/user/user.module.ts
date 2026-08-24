@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateUserUseCase } from './application/use-cases/create-user.usecase';
 import { DeleteUserUseCase } from './application/use-cases/delete-user.usecase';
+import { FindAllUsersUseCase } from './application/use-cases/find-all-users.usecase';
 import { FindUserByEmailUseCase } from './application/use-cases/find-user-by-email.usecase';
 import { FindUserByIdUseCase } from './application/use-cases/find-user-by-id.usecase';
-import { GetAllUsersUseCase } from './application/use-cases/get-all-users.usecase';
 import { UpdateUserUseCase } from './application/use-cases/update-user.usecase';
+import { UserFacade } from './application/user.facade';
 import { UserRepository } from './domain/repositories/user.repository';
 import { UserTypeOrmEntity } from './infrastructure/persistence/user.typeorm.entity';
 import { UserTypeOrmRepository } from './infrastructure/repositories/user.typeorm.repository';
@@ -17,15 +18,16 @@ import { UserController } from './presentation/user.controller';
   providers: [
     CreateUserUseCase,
     DeleteUserUseCase,
+    FindAllUsersUseCase,
     FindUserByEmailUseCase,
     FindUserByIdUseCase,
-    GetAllUsersUseCase,
     UpdateUserUseCase,
+    UserFacade,
     {
       provide: UserRepository,
       useClass: UserTypeOrmRepository,
     },
   ],
-  exports: [CreateUserUseCase, FindUserByEmailUseCase],
+  exports: [UserFacade],
 })
 export class UserModule {}

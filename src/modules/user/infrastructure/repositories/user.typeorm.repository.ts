@@ -11,7 +11,8 @@ export class UserTypeOrmRepository implements UserRepository {
     @InjectRepository(UserTypeOrmEntity)
     private readonly repository: Repository<UserTypeOrmEntity>,
   ) {}
-  public async getAll(): Promise<UserEntity[]> {
+
+  public async findAll(): Promise<UserEntity[]> {
     const entities = await this.repository.find();
     return entities.map((entity) => this.toDomain(entity));
   }
@@ -39,12 +40,8 @@ export class UserTypeOrmRepository implements UserRepository {
     await this.repository.delete(id);
   }
 
-  public checkByEmail(email: string): Promise<boolean> {
-    return this.repository.exists({ where: { email: email } });
-  }
-
   private toDomain(entity: UserTypeOrmEntity): UserEntity {
-    const { id, name, email, password, role } = entity;
-    return new UserEntity(id, name, email, password, role);
+    const { id, name, email, password } = entity;
+    return new UserEntity(id, name, email, password);
   }
 }

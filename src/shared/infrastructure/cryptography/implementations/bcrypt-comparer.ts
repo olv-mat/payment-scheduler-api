@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { Comparer } from 'src/shared/domain/cryptography/comparer';
+import { CryptographyComparer } from 'src/shared/domain/cryptography/comparer';
 
 @Injectable()
-export class BcryptComparer implements Comparer {
+export class BcryptCryptographyComparer implements CryptographyComparer {
   public compare(value: string, hash: string): Promise<boolean> {
     return bcrypt.compare(value, hash);
   }

@@ -2,12 +2,12 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { Comparer } from 'src/shared/domain/cryptography/comparer';
-import { Signer } from 'src/shared/domain/cryptography/signer';
-import { Hasher } from '../../domain/cryptography/hasher';
-import { BcryptComparer } from './implementations/bcrypt-comparer';
-import { BcryptHasher } from './implementations/bcrypt-hasher';
-import { JwtSigner } from './implementations/jwt-signer';
+import { CryptographyComparer } from 'src/shared/domain/cryptography/comparer';
+import { CryptographySigner } from 'src/shared/domain/cryptography/signer';
+import { CryptographyHasher } from '../../domain/cryptography/hasher';
+import { BcryptCryptographyComparer } from './implementations/bcrypt-comparer';
+import { BcryptCryptographyHasher } from './implementations/bcrypt-hasher';
+import { JwtCryptographySigner } from './implementations/jwt-signer';
 
 @Global()
 @Module({
@@ -27,10 +27,10 @@ import { JwtSigner } from './implementations/jwt-signer';
     PassportModule,
   ],
   providers: [
-    { provide: Comparer, useClass: BcryptComparer },
-    { provide: Hasher, useClass: BcryptHasher },
-    { provide: Signer, useClass: JwtSigner },
+    { provide: CryptographyComparer, useClass: BcryptCryptographyComparer },
+    { provide: CryptographyHasher, useClass: BcryptCryptographyHasher },
+    { provide: CryptographySigner, useClass: JwtCryptographySigner },
   ],
-  exports: [Comparer, Hasher, Signer],
+  exports: [CryptographyComparer, CryptographyHasher, CryptographySigner],
 })
 export class CryptographyModule {}

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Hasher } from 'src/shared/domain/cryptography/hasher';
+import { CryptographyHasher } from 'src/shared/domain/cryptography/hasher';
 import { EmailAlreadyInUseError } from '../../domain/errors/email-already-in-use.error';
 import { UserNotFoundError } from '../../domain/errors/user-not-found.error';
 import { UserRepository } from '../../domain/repositories/user.repository';
@@ -8,22 +8,24 @@ import { UpdateUserPayload } from '../../domain/types/update-user-payload.type';
 @Injectable()
 export class UpdateUserUseCase {
   constructor(
-    private readonly repository: UserRepository,
-    private readonly hasher: Hasher,
+    private readonly userRepository: UserRepository,
+    private readonly cryptographyHasher: CryptographyHasher,
   ) {}
 
   public async execute(id: string, payload: UpdateUserPayload): Promise<void> {
     const { email, password } = payload;
-    const entity = await this.repository.findById(id);
-    if (!entity) throw new UserNotFoundError();
-    if (email && email !== entity.email) {
-      if (await this.repository.checkByEmail(email)) {
+    const userEntity = await this.userRepository.findById(id);
+    if (!userEntity) throw new UserNotFoundError();
+    if (email && email !== userEntity.email) {
+      if (await this.userRepository.findByEmail(email)) {
         throw new EmailAlreadyInUseError();
       }
     }
-    await this.repository.update(entity.id, {
+    await this.userRepository.update(userEntity.id, {
       ...payload,
-      ...(password && { password: await this.hasher.hash(password) }),
+      ...(password && {
+        password: await this.cryptographyHasher.hash(password),
+      }),
     });
   }
 }

@@ -18,10 +18,7 @@ import {
   SwaggerNotFound,
   SwaggerOperation,
 } from 'src/shared/presentation/swagger/swagger.decorators';
-import { DeleteUserUseCase } from '../application/use-cases/delete-user.usecase';
-import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.usecase';
-import { GetAllUsersUseCase } from '../application/use-cases/get-all-users.usecase';
-import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
+import { UserFacade } from '../application/user.facade';
 import { EmailAlreadyInUseError } from '../domain/errors/email-already-in-use.error';
 import { UserNotFoundError } from '../domain/errors/user-not-found.error';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -29,19 +26,14 @@ import { UserResponseDto } from './dtos/user-response.dto';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly getAllUseCase: GetAllUsersUseCase,
-    private readonly findByIdUseCase: FindUserByIdUseCase,
-    private readonly updateUseCase: UpdateUserUseCase,
-    private readonly deleteUseCase: DeleteUserUseCase,
-  ) {}
+  constructor(private readonly userFacade: UserFacade) {}
 
   @Get()
   @SwaggerOperation('Retrieve all users')
   @SwaggerInternalServerError()
-  public async getAll(): Promise<UserResponseDto[]> {
-    const entities = await this.getAllUseCase.execute();
-    return UserResponseDto.fromEntities(entities);
+  public async findAll(): Promise<UserResponseDto[]> {
+    const userEntities = await this.userFacade.findAll();
+    return UserResponseDto.fromEntities(userEntities);
   }
 
   @Get(':id')
@@ -50,8 +42,8 @@ export class UserController {
   @SwaggerInternalServerError()
   public async findOne(@Param() { id }: IdDto): Promise<UserResponseDto> {
     try {
-      const entity = await this.findByIdUseCase.execute(id);
-      return UserResponseDto.fromEntity(entity);
+      const userEntity = await this.userFacade.findById(id);
+      return UserResponseDto.fromEntity(userEntity);
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new NotFoundException(error.message);
@@ -71,7 +63,7 @@ export class UserController {
     @Body(new AtLeastOneFieldPipe()) dto: UpdateUserDto,
   ): Promise<DefaultResponseDto> {
     try {
-      await this.updateUseCase.execute(id, dto);
+      await this.userFacade.update(id, dto);
       return DefaultResponseDto.create('User updated successfully');
     } catch (error) {
       if (error instanceof UserNotFoundError) {
@@ -90,7 +82,7 @@ export class UserController {
   @SwaggerInternalServerError()
   public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {
     try {
-      await this.deleteUseCase.execute(id);
+      await this.userFacade.delete(id);
       return DefaultResponseDto.create('User deleted successfully');
     } catch (error) {
       if (error instanceof UserNotFoundError) {

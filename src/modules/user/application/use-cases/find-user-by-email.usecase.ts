@@ -4,9 +4,9 @@ import { UserRepository } from '../../domain/repositories/user.repository';
 
 @Injectable()
 export class FindUserByEmailUseCase {
-  constructor(private readonly repository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   public execute(email: string): Promise<UserEntity | null> {
-    return this.repository.findByEmail(email);
+    return this.userRepository.findByEmail(email);
   }
 }

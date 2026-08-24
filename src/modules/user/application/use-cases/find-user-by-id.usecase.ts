@@ -5,11 +5,11 @@ import { UserRepository } from '../../domain/repositories/user.repository';
 
 @Injectable()
 export class FindUserByIdUseCase {
-  constructor(private readonly repository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   public async execute(id: string): Promise<UserEntity> {
-    const entity = await this.repository.findById(id);
-    if (!entity) throw new UserNotFoundError();
-    return entity;
+    const userEntity = await this.userRepository.findById(id);
+    if (!userEntity) throw new UserNotFoundError();
+    return userEntity;
   }
 }

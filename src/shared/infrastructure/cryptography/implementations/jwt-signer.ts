@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Signer } from '../../../domain/cryptography/signer';
+import { CryptographySigner } from '../../../domain/cryptography/signer';
 
 @Injectable()
-export class JwtSigner implements Signer {
+export class JwtCryptographySigner implements CryptographySigner {
   constructor(private readonly service: JwtService) {}
 
   public sign<T extends object>(payload: T): Promise<string> {
