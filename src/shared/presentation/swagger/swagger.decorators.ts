@@ -1,5 +1,6 @@
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -13,6 +14,10 @@ export const SwaggerOperation = (
   return description
     ? ApiOperation({ summary: summary, description: description })
     : ApiOperation({ summary: summary });
+};
+
+export const SwaggerBearerAuth = () => {
+  return ApiBearerAuth();
 };
 
 export const SwaggerBadRequest = (message: string) => {

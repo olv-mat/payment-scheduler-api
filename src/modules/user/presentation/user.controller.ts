@@ -7,12 +7,15 @@ import {
   NotFoundException,
   Param,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-response.dto';
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
 import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
 import {
   SwaggerBadRequest,
+  SwaggerBearerAuth,
   SwaggerConflict,
   SwaggerInternalServerError,
   SwaggerNotFound,
@@ -25,6 +28,8 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
 
 @Controller('users')
+@UseGuards(JwtGuard)
+@SwaggerBearerAuth()
 export class UserController {
   constructor(private readonly userFacade: UserFacade) {}
 
