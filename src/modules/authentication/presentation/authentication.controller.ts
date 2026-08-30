@@ -1,5 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreateUserDto } from 'src/modules/user/presentation/dtos/create-user.dto';
+import {
+  SwaggerConflict,
+  SwaggerInternalServerError,
+  SwaggerOperation,
+  SwaggerUnauthorized,
+} from 'src/shared/presentation/swagger/swagger.decorators';
 import { LoginUseCase } from '../application/use-cases/login.usecase';
 import { RegisterUseCase } from '../application/use-cases/register.usecase';
 import { AuthenticationResponseDto } from './dtos/authentication-response.dto';
@@ -13,6 +19,9 @@ export class AuthenticationController {
   ) {}
 
   @Post('/register')
+  @SwaggerOperation('Register user and return the access token')
+  @SwaggerConflict('Email already in use')
+  @SwaggerInternalServerError()
   public async register(
     @Body() dto: CreateUserDto,
   ): Promise<AuthenticationResponseDto> {
@@ -21,6 +30,9 @@ export class AuthenticationController {
   }
 
   @Post('/login')
+  @SwaggerOperation('Authenticate user and return the access token')
+  @SwaggerUnauthorized('Invalid credentials')
+  @SwaggerInternalServerError()
   public async login(
     @Body() dto: LoginDto,
   ): Promise<AuthenticationResponseDto> {

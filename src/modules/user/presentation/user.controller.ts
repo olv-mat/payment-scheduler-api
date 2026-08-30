@@ -20,6 +20,7 @@ import {
   SwaggerInternalServerError,
   SwaggerNotFound,
   SwaggerOperation,
+  SwaggerUnauthorized,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 import { UserFacade } from '../application/user.facade';
 import { EmailAlreadyInUseError } from '../domain/errors/email-already-in-use.error';
@@ -35,6 +36,7 @@ export class UserController {
 
   @Get()
   @SwaggerOperation('Retrieve all users')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerInternalServerError()
   public async findAll(): Promise<UserResponseDto[]> {
     const userEntities = await this.userFacade.findAll();
@@ -43,6 +45,7 @@ export class UserController {
 
   @Get(':id')
   @SwaggerOperation('Retrieve a specific user')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not found')
   @SwaggerInternalServerError()
   public async findOne(@Param() { id }: IdDto): Promise<UserResponseDto> {
@@ -60,6 +63,7 @@ export class UserController {
   @Patch(':id')
   @SwaggerOperation('Update a specific user')
   @SwaggerBadRequest('At least one field must be provided')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
   @SwaggerConflict('Email already in use')
   @SwaggerInternalServerError()
@@ -83,6 +87,7 @@ export class UserController {
 
   @Delete(':id')
   @SwaggerOperation('Delete a specific user')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
   @SwaggerInternalServerError()
   public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {

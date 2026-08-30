@@ -5,6 +5,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 export const SwaggerOperation = (
@@ -27,6 +28,18 @@ export const SwaggerBadRequest = (message: string) => {
         message: message,
         error: 'Bad Request',
         statusCode: 400,
+      },
+    },
+  });
+};
+
+export const SwaggerUnauthorized = (message: string) => {
+  return ApiUnauthorizedResponse({
+    schema: {
+      example: {
+        message: message,
+        error: 'Unauthorized',
+        statusCode: 401,
       },
     },
   });
