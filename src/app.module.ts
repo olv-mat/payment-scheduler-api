@@ -12,7 +12,7 @@ import { CryptographyModule } from './shared/infrastructure/cryptography/cryptog
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: 'postgres',
         host: configService.getOrThrow<string>('DATABASE_HOST'),
         port: configService.getOrThrow<number>('DATABASE_PORT'),
         username: configService.getOrThrow<string>('DATABASE_USERNAME'),
