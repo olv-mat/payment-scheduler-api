@@ -25,8 +25,8 @@ export class AuthenticationController {
   public async register(
     @Body() dto: CreateUserDto,
   ): Promise<AuthenticationResponseDto> {
-    const { user, token } = await this.registerUseCase.execute(dto);
-    return AuthenticationResponseDto.fromEntity(user, token);
+    const result = await this.registerUseCase.execute(dto);
+    return AuthenticationResponseDto.fromAuthenticationResult(result);
   }
 
   @Post('/login')
@@ -36,7 +36,7 @@ export class AuthenticationController {
   public async login(
     @Body() dto: LoginDto,
   ): Promise<AuthenticationResponseDto> {
-    const { user, token } = await this.loginUseCase.execute(dto);
-    return AuthenticationResponseDto.fromEntity(user, token);
+    const result = await this.loginUseCase.execute(dto);
+    return AuthenticationResponseDto.fromAuthenticationResult(result);
   }
 }

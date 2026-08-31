@@ -7,7 +7,6 @@ import { FindAllUsersUseCase } from './application/use-cases/find-all-users.usec
 import { FindUserByEmailUseCase } from './application/use-cases/find-user-by-email.usecase';
 import { FindUserByIdUseCase } from './application/use-cases/find-user-by-id.usecase';
 import { UpdateUserUseCase } from './application/use-cases/update-user.usecase';
-import { UserFacade } from './application/user.facade';
 import { UserRepository } from './domain/repositories/user.repository';
 import { UserTypeOrmEntity } from './infrastructure/persistence/user.typeorm.entity';
 import { UserTypeOrmRepository } from './infrastructure/repositories/user.typeorm.repository';
@@ -26,12 +25,11 @@ import { UserController } from './presentation/user.controller';
     FindUserByEmailUseCase,
     FindUserByIdUseCase,
     UpdateUserUseCase,
-    UserFacade,
     {
       provide: UserRepository,
       useClass: UserTypeOrmRepository,
     },
   ],
-  exports: [UserFacade],
+  exports: [FindUserByEmailUseCase, CreateUserUseCase],
 })
 export class UserModule {}

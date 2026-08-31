@@ -3,7 +3,7 @@ import { CryptographyHasher } from 'src/shared/domain/cryptography/hasher';
 import { EmailAlreadyInUseError } from '../../domain/errors/email-already-in-use.error';
 import { UserNotFoundError } from '../../domain/errors/user-not-found.error';
 import { UserRepository } from '../../domain/repositories/user.repository';
-import { UpdateUserPayload } from '../../domain/types/update-user-payload.type';
+import { UpdateUserInput } from '../../domain/types/update-user-input.type';
 
 @Injectable()
 export class UpdateUserUseCase {
@@ -12,8 +12,8 @@ export class UpdateUserUseCase {
     private readonly cryptographyHasher: CryptographyHasher,
   ) {}
 
-  public async execute(id: string, payload: UpdateUserPayload): Promise<void> {
-    const { email, password } = payload;
+  public async execute(id: string, input: UpdateUserInput): Promise<void> {
+    const { email, password } = input;
     const userEntity = await this.userRepository.findById(id);
     if (!userEntity) throw new UserNotFoundError();
     if (email && email !== userEntity.email) {
@@ -22,7 +22,7 @@ export class UpdateUserUseCase {
       }
     }
     await this.userRepository.update(userEntity.id, {
-      ...payload,
+      ...input,
       ...(password && {
         password: await this.cryptographyHasher.hash(password),
       }),

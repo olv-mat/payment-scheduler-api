@@ -2,8 +2,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
-import { CreateUserPayload } from '../../domain/types/create-user-payload.type';
-import { UpdateUserPayload } from '../../domain/types/update-user-payload.type';
+import { CreateUserInput } from '../../domain/types/create-user-input.type';
+import { UpdateUserInput } from '../../domain/types/update-user-input.type';
 import { UserTypeOrmEntity } from '../persistence/user.typeorm.entity';
 
 export class UserTypeOrmRepository implements UserRepository {
@@ -27,13 +27,13 @@ export class UserTypeOrmRepository implements UserRepository {
     return entity ? this.toDomain(entity) : null;
   }
 
-  public async create(payload: CreateUserPayload): Promise<UserEntity> {
-    const entity = await this.repository.save(payload);
+  public async create(input: CreateUserInput): Promise<UserEntity> {
+    const entity = await this.repository.save(input);
     return this.toDomain(entity);
   }
 
-  public async update(id: string, payload: UpdateUserPayload): Promise<void> {
-    await this.repository.update(id, payload);
+  public async update(id: string, input: UpdateUserInput): Promise<void> {
+    await this.repository.update(id, input);
   }
 
   public async delete(id: string): Promise<void> {

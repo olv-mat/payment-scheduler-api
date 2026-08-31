@@ -4,9 +4,9 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
-import { CreateUserPayload } from '../../domain/types/create-user-payload.type';
+import { CreateUserInput } from '../../domain/types/create-user-input.type';
 
-export class CreateUserDto implements CreateUserPayload {
+export class CreateUserDto implements CreateUserInput {
   @IsNotEmpty()
   @IsString()
   public readonly name!: string;

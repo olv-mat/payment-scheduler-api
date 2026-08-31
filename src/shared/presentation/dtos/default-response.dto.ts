@@ -1,8 +1,8 @@
 export class DefaultResponseDto {
   public readonly message: string;
 
-  private constructor(messsage: string) {
-    this.message = messsage;
+  private constructor(message: string) {
+    this.message = message;
   }
 
   public static create(message: string): DefaultResponseDto {
