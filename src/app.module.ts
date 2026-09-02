@@ -5,6 +5,7 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
 import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/user.typeorm.entity';
 import { UserModule } from './modules/user/user.module';
 import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
+import { AccountModule } from './modules/account/account.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CryptographyModule } from './shared/infrastructure/cryptography/cryptog
     UserModule,
     CryptographyModule,
     AuthenticationModule,
+    AccountModule,
   ],
   controllers: [],
   providers: [],
