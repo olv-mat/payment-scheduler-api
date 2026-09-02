@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccountModule } from './modules/account/account.module';
+import { AccountTypeOrmEntity } from './modules/account/infrastructure/persistence/account.typeorm.entity';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
 import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/user.typeorm.entity';
 import { UserModule } from './modules/user/user.module';
 import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
-import { AccountModule } from './modules/account/account.module';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AccountModule } from './modules/account/account.module';
         username: configService.getOrThrow<string>('DATABASE_USERNAME'),
         password: configService.getOrThrow<string>('DATABASE_PASSWORD'),
         database: configService.getOrThrow<string>('DATABASE_NAME'),
-        entities: [UserTypeOrmEntity],
+        entities: [UserTypeOrmEntity, AccountTypeOrmEntity],
         autoLoadEntities: false,
         synchronize: true,
       }),
