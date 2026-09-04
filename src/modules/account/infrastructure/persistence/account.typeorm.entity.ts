@@ -3,7 +3,7 @@ import { Column, Entity } from 'typeorm';
 
 @Entity('accounts')
 export class AccountTypeOrmEntity extends BaseTypeOrmEntity {
-  @Column({ nullable: false })
+  @Column({ type: 'int', generated: 'increment', nullable: false })
   public number!: number;
 
   @Column({ nullable: false })
