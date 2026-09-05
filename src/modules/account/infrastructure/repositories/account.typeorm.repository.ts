@@ -2,7 +2,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../../domain/entities/account.entity';
 import { AccountRepository } from '../../domain/repositories/account.repository';
-import { CreateAccountInput } from '../../domain/types/create-account-input.type';
 import { AccountTypeOrmEntity } from '../persistence/account.typeorm.entity';
 
 export class AccountTypeOrmRepository implements AccountRepository {
@@ -11,9 +10,13 @@ export class AccountTypeOrmRepository implements AccountRepository {
     private readonly accountRepository: Repository<AccountTypeOrmEntity>,
   ) {}
 
-  public async create(input: CreateAccountInput): Promise<AccountEntity> {
-    const accountEntity = await this.accountRepository.save(input);
+  public async create(): Promise<AccountEntity> {
+    const accountEntity = await this.accountRepository.save({});
     return this.toDomain(accountEntity);
+  }
+
+  public async setBalance(id: string, balance: number): Promise<void> {
+    await this.accountRepository.update(id, { balance });
   }
 
   private toDomain(entity: AccountTypeOrmEntity): AccountEntity {
