@@ -10,6 +10,13 @@ export class AccountTypeOrmRepository implements AccountRepository {
     private readonly accountRepository: Repository<AccountTypeOrmEntity>,
   ) {}
 
+  public async findById(id: string): Promise<AccountEntity | null> {
+    const accountEntity = await this.accountRepository.findOne({
+      where: { id: id },
+    });
+    return accountEntity ? this.toDomain(accountEntity) : null;
+  }
+
   public async create(): Promise<AccountEntity> {
     const accountEntity = await this.accountRepository.save({});
     return this.toDomain(accountEntity);
