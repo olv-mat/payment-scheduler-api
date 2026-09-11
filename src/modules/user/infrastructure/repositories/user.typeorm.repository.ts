@@ -9,35 +9,37 @@ import { UserTypeOrmEntity } from '../persistence/user.typeorm.entity';
 export class UserTypeOrmRepository implements UserRepository {
   constructor(
     @InjectRepository(UserTypeOrmEntity)
-    private readonly repository: Repository<UserTypeOrmEntity>,
+    private readonly userRepository: Repository<UserTypeOrmEntity>,
   ) {}
 
   public async findAll(): Promise<UserEntity[]> {
-    const entities = await this.repository.find();
-    return entities.map((entity) => this.toDomain(entity));
+    const userEntities = await this.userRepository.find();
+    return userEntities.map((userEntity) => this.toDomain(userEntity));
   }
 
   public async findById(id: string): Promise<UserEntity | null> {
-    const entity = await this.repository.findOne({ where: { id: id } });
-    return entity ? this.toDomain(entity) : null;
+    const userEntity = await this.userRepository.findOne({ where: { id: id } });
+    return userEntity ? this.toDomain(userEntity) : null;
   }
 
   public async findByEmail(email: string): Promise<UserEntity | null> {
-    const entity = await this.repository.findOne({ where: { email: email } });
-    return entity ? this.toDomain(entity) : null;
+    const userEntity = await this.userRepository.findOne({
+      where: { email: email },
+    });
+    return userEntity ? this.toDomain(userEntity) : null;
   }
 
   public async create(input: CreateUserInput): Promise<UserEntity> {
-    const entity = await this.repository.save(input);
-    return this.toDomain(entity);
+    const userEntity = await this.userRepository.save(input);
+    return this.toDomain(userEntity);
   }
 
   public async update(id: string, input: UpdateUserInput): Promise<void> {
-    await this.repository.update(id, input);
+    await this.userRepository.update(id, input);
   }
 
   public async delete(id: string): Promise<void> {
-    await this.repository.delete(id);
+    await this.userRepository.delete(id);
   }
 
   private toDomain(entity: UserTypeOrmEntity): UserEntity {
