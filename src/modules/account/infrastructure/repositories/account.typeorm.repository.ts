@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/modules/user/domain/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../../domain/entities/account.entity';
 import { AccountRepository } from '../../domain/repositories/account.repository';
@@ -17,8 +18,10 @@ export class AccountTypeOrmRepository implements AccountRepository {
     return accountEntity ? this.toDomain(accountEntity) : null;
   }
 
-  public async create(): Promise<AccountEntity> {
-    const accountEntity = await this.accountRepository.save({});
+  public async create(owner: UserEntity): Promise<AccountEntity> {
+    const accountEntity = await this.accountRepository.save({
+      user: { id: owner.id },
+    });
     return this.toDomain(accountEntity);
   }
 
@@ -27,7 +30,7 @@ export class AccountTypeOrmRepository implements AccountRepository {
   }
 
   private toDomain(entity: AccountTypeOrmEntity): AccountEntity {
-    const { id, number, balance } = entity;
-    return new AccountEntity(id, number, balance);
+    const { id, number, balance, user } = entity;
+    return new AccountEntity(id, number, balance, user);
   }
 }

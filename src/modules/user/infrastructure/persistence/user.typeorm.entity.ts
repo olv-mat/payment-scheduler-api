@@ -1,5 +1,6 @@
+import { AccountTypeOrmEntity } from 'src/modules/account/infrastructure/persistence/account.typeorm.entity';
 import { BaseTypeOrmEntity } from 'src/shared/infrastructure/persistence/base.typeorm.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 @Entity('users')
 export class UserTypeOrmEntity extends BaseTypeOrmEntity {
@@ -11,4 +12,7 @@ export class UserTypeOrmEntity extends BaseTypeOrmEntity {
 
   @Column({ length: 255, nullable: false })
   public password!: string;
+
+  @OneToOne(() => AccountTypeOrmEntity, (account) => account.user)
+  public account?: AccountTypeOrmEntity;
 }
