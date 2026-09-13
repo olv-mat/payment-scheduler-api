@@ -6,6 +6,7 @@ import {
   ApiNotFoundResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
 export const SwaggerOperation = (
@@ -64,6 +65,18 @@ export const SwaggerConflict = (message: string) => {
         message: message,
         error: 'Conflict',
         statusCode: 409,
+      },
+    },
+  });
+};
+
+export const SwaggerUnprocessableEntity = (message: string) => {
+  return ApiUnprocessableEntityResponse({
+    schema: {
+      example: {
+        message: message,
+        error: 'Unprocessable Entity',
+        statusCode: 422,
       },
     },
   });

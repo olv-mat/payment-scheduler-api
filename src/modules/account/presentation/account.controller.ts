@@ -10,7 +10,14 @@ import {
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-response.dto';
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
-import { SwaggerBearerAuth } from 'src/shared/presentation/swagger/swagger.decorators';
+import {
+  SwaggerBearerAuth,
+  SwaggerInternalServerError,
+  SwaggerNotFound,
+  SwaggerOperation,
+  SwaggerUnauthorized,
+  SwaggerUnprocessableEntity,
+} from 'src/shared/presentation/swagger/swagger.decorators';
 import { DecreaseAccountBalanceUseCase } from '../application/use-cases/decrease-account-balance.usecase';
 import { IncreaseAccountBalanceUseCase } from '../application/use-cases/increase-account-balance.usecase';
 import { AccountNotFoundError } from '../domain/errors/account-not-found.error';
@@ -27,6 +34,11 @@ export class AccountController {
   ) {}
 
   @Patch(':id/balance')
+  @SwaggerOperation('Update a specific account balance')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerNotFound('Account not found')
+  @SwaggerUnprocessableEntity('Insufficient account balance')
+  @SwaggerInternalServerError()
   public async updateBalance(
     @Param() { id }: IdDto,
     @Body() dto: ValueDto,
