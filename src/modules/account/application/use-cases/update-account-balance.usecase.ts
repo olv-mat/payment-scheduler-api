@@ -5,19 +5,15 @@ import { AccountRepository } from '../../domain/repositories/account.repository'
 import { ValueInput } from '../../domain/types/value-input.type';
 
 @Injectable()
-export class DecreaseAccountBalanceUseCase {
+export class UpdateAccountBalanceUseCase {
   constructor(private readonly accountRepository: AccountRepository) {}
 
   public async execute(id: string, input: ValueInput): Promise<void> {
     const { value } = input;
     const accountEntity = await this.accountRepository.findById(id);
     if (!accountEntity) throw new AccountNotFoundError();
-    if (value > accountEntity.balance) {
-      throw new InsufficientAccountBalanceError();
-    }
-    await this.accountRepository.setBalance(
-      accountEntity.id,
-      accountEntity.balance - value,
-    );
+    const newBalance = accountEntity.balance + value;
+    if (newBalance < 0) throw new InsufficientAccountBalanceError();
+    await this.accountRepository.setBalance(accountEntity.id, newBalance);
   }
 }

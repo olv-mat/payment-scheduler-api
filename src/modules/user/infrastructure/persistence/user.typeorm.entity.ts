@@ -14,5 +14,5 @@ export class UserTypeOrmEntity extends BaseTypeOrmEntity {
   public password!: string;
 
   @OneToOne(() => AccountTypeOrmEntity, (account) => account.user)
-  public account?: AccountTypeOrmEntity;
+  public account!: AccountTypeOrmEntity;
 }

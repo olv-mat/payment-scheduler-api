@@ -11,7 +11,7 @@ export class AccountTypeOrmEntity extends BaseTypeOrmEntity {
   @Column({ default: 0, nullable: false })
   public balance!: number;
 
-  @OneToOne(() => UserTypeOrmEntity, { nullable: false })
+  @OneToOne(() => UserTypeOrmEntity, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })
   public user!: UserTypeOrmEntity;
 }

@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateAccountUseCase } from './application/use-cases/create-account.usecase';
-import { DecreaseAccountBalanceUseCase } from './application/use-cases/decrease-account-balance.usecase';
-import { IncreaseAccountBalanceUseCase } from './application/use-cases/increase-account-balance.usecase';
+import { UpdateAccountBalanceUseCase } from './application/use-cases/update-account-balance.usecase';
 import { AccountRepository } from './domain/repositories/account.repository';
 import { AccountTypeOrmEntity } from './infrastructure/persistence/account.typeorm.entity';
 import { AccountTypeOrmRepository } from './infrastructure/repositories/account.typeorm.repository';
@@ -13,17 +12,12 @@ import { AccountController } from './presentation/account.controller';
   controllers: [AccountController],
   providers: [
     CreateAccountUseCase,
-    DecreaseAccountBalanceUseCase,
-    IncreaseAccountBalanceUseCase,
+    UpdateAccountBalanceUseCase,
     {
       provide: AccountRepository,
       useClass: AccountTypeOrmRepository,
     },
   ],
-  exports: [
-    CreateAccountUseCase,
-    DecreaseAccountBalanceUseCase,
-    IncreaseAccountBalanceUseCase,
-  ],
+  exports: [CreateAccountUseCase, UpdateAccountBalanceUseCase],
 })
 export class AccountModule {}
