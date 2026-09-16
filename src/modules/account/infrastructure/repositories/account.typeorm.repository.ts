@@ -18,6 +18,13 @@ export class AccountTypeOrmRepository implements AccountRepository {
     return accountEntity ? this.toDomain(accountEntity) : null;
   }
 
+  public async findByNumber(number: number): Promise<AccountEntity | null> {
+    const accountEntity = await this.accountRepository.findOne({
+      where: { number: number },
+    });
+    return accountEntity ? this.toDomain(accountEntity) : null;
+  }
+
   public async create(owner: UserEntity): Promise<AccountEntity> {
     const accountEntity = await this.accountRepository.save({
       user: { id: owner.id },
