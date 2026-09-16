@@ -1,0 +1,15 @@
+import { Injectable } from '@nestjs/common';
+import { AccountEntity } from '../../domain/entities/account.entity';
+import { AccountNotFoundError } from '../../domain/errors/account-not-found.error';
+import { AccountRepository } from '../../domain/repositories/account.repository';
+
+@Injectable()
+export class FindAccountByIdUseCase {
+  constructor(private readonly accountRepository: AccountRepository) {}
+
+  public async execute(id: string): Promise<AccountEntity> {
+    const accountEntity = await this.accountRepository.findById(id);
+    if (!accountEntity) throw new AccountNotFoundError();
+    return accountEntity;
+  }
+}
