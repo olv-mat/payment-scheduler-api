@@ -18,6 +18,7 @@ import { RegisterUseCase } from '../application/use-cases/register.usecase';
 import { InvalidCredentialsError } from '../domain/errors/invalid-credentials.error';
 import { AuthenticationResponseDto } from './dtos/authentication-response.dto';
 import { LoginDto } from './dtos/login.dto';
+import { AuthenticationResponseMapper } from './mappers/authentication-response.mapper';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -35,7 +36,7 @@ export class AuthenticationController {
   ): Promise<AuthenticationResponseDto> {
     try {
       const result = await this.registerUseCase.execute(dto);
-      return AuthenticationResponseDto.fromAuthenticationResult(result);
+      return AuthenticationResponseMapper.fromAuthenticationResult(result);
     } catch (error) {
       if (error instanceof EmailAlreadyInUseError) {
         throw new ConflictException(error.message);
@@ -53,7 +54,7 @@ export class AuthenticationController {
   ): Promise<AuthenticationResponseDto> {
     try {
       const result = await this.loginUseCase.execute(dto);
-      return AuthenticationResponseDto.fromAuthenticationResult(result);
+      return AuthenticationResponseMapper.fromAuthenticationResult(result);
     } catch (error) {
       if (error instanceof InvalidCredentialsError) {
         throw new UnauthorizedException(error.message);

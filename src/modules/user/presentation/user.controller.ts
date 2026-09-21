@@ -9,6 +9,7 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
+import { FindAccountByOwnerUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner.usecase';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-response.dto';
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
@@ -30,6 +31,9 @@ import { EmailAlreadyInUseError } from '../domain/errors/email-already-in-use.er
 import { UserNotFoundError } from '../domain/errors/user-not-found.error';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
+import { UserWithAccountResponseDto } from './dtos/user-with-account-response.dto';
+import { UserResponseMapper } from './mappers/user-response.mapper';
+import { UserWithAccountResponseMapper } from './mappers/user-with-account-response.mapper';
 
 @Controller('users')
 @UseGuards(JwtGuard)
@@ -38,6 +42,7 @@ export class UserController {
   constructor(
     private readonly findAllUsersUseCase: FindAllUsersUseCase,
     private readonly findUserByIdUseCase: FindUserByIdUseCase,
+    private readonly findAccountByOwnerUseCase: FindAccountByOwnerUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
   ) {}
@@ -48,18 +53,25 @@ export class UserController {
   @SwaggerInternalServerError()
   public async findAll(): Promise<UserResponseDto[]> {
     const userEntities = await this.findAllUsersUseCase.execute();
-    return UserResponseDto.fromEntities(userEntities);
+    return UserResponseMapper.fromEntities(userEntities);
   }
 
   @Get(':id')
-  @SwaggerOperation('Retrieve a specific user')
+  @SwaggerOperation('Retrieve a specific user with account')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not found')
   @SwaggerInternalServerError()
-  public async findOne(@Param() { id }: IdDto): Promise<UserResponseDto> {
+  public async findOne(
+    @Param() { id }: IdDto,
+  ): Promise<UserWithAccountResponseDto> {
     try {
       const userEntity = await this.findUserByIdUseCase.execute(id);
-      return UserResponseDto.fromEntity(userEntity);
+      const accountEntity =
+        await this.findAccountByOwnerUseCase.execute(userEntity);
+      return UserWithAccountResponseMapper.fromEntities(
+        userEntity,
+        accountEntity,
+      );
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new NotFoundException(error.message);
