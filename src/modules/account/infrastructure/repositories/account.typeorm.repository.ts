@@ -18,9 +18,9 @@ export class AccountTypeOrmRepository implements AccountRepository {
     return accountEntity ? this.toDomain(accountEntity) : null;
   }
 
-  public async findByNumber(number: number): Promise<AccountEntity | null> {
+  public async findByOwner(owner: UserEntity): Promise<AccountEntity | null> {
     const accountEntity = await this.accountRepository.findOne({
-      where: { number: number },
+      where: { user: { id: owner.id } },
     });
     return accountEntity ? this.toDomain(accountEntity) : null;
   }
