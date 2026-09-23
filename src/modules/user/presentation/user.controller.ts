@@ -1,10 +1,8 @@
 import {
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   UseGuards,
@@ -27,8 +25,6 @@ import { DeleteUserUseCase } from '../application/use-cases/delete-user.usecase'
 import { FindAllUsersUseCase } from '../application/use-cases/find-all-users.usecase';
 import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.usecase';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
-import { EmailAlreadyInUseError } from '../domain/errors/email-already-in-use.error';
-import { UserNotFoundError } from '../domain/errors/user-not-found.error';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
 import { UserWithAccountResponseDto } from './dtos/user-with-account-response.dto';
@@ -64,20 +60,13 @@ export class UserController {
   public async findOne(
     @Param() { id }: IdDto,
   ): Promise<UserWithAccountResponseDto> {
-    try {
-      const userEntity = await this.findUserByIdUseCase.execute(id);
-      const accountEntity =
-        await this.findAccountByOwnerUseCase.execute(userEntity);
-      return UserWithAccountResponseMapper.fromEntities(
-        userEntity,
-        accountEntity,
-      );
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw new NotFoundException(error.message);
-      }
-      throw error;
-    }
+    const userEntity = await this.findUserByIdUseCase.execute(id);
+    const accountEntity =
+      await this.findAccountByOwnerUseCase.execute(userEntity);
+    return UserWithAccountResponseMapper.fromEntities(
+      userEntity,
+      accountEntity,
+    );
   }
 
   @Patch(':id')
@@ -91,18 +80,8 @@ export class UserController {
     @Param() { id }: IdDto,
     @Body(new AtLeastOneFieldPipe()) dto: UpdateUserDto,
   ): Promise<DefaultResponseDto> {
-    try {
-      await this.updateUserUseCase.execute(id, dto);
-      return DefaultResponseDto.create('User updated successfully');
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw new NotFoundException(error.message);
-      }
-      if (error instanceof EmailAlreadyInUseError) {
-        throw new ConflictException(error.message);
-      }
-      throw error;
-    }
+    await this.updateUserUseCase.execute(id, dto);
+    return DefaultResponseDto.create('User updated successfully');
   }
 
   @Delete(':id')
@@ -111,14 +90,7 @@ export class UserController {
   @SwaggerNotFound('User not Found')
   @SwaggerInternalServerError()
   public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {
-    try {
-      await this.deleteUserUseCase.execute(id);
-      return DefaultResponseDto.create('User deleted successfully');
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw new NotFoundException(error.message);
-      }
-      throw error;
-    }
+    await this.deleteUserUseCase.execute(id);
+    return DefaultResponseDto.create('User deleted successfully');
   }
 }

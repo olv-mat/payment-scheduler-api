@@ -1,4 +1,4 @@
-export class DomainError extends Error {
+export abstract class ConflictError extends Error {
   constructor(message: string) {
     super(message);
     this.name = new.target.name;

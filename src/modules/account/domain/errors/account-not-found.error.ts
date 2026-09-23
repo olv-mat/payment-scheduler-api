@@ -1,6 +1,6 @@
-import { DomainError } from 'src/shared/domain/errors/domain.error';
+import { NotFoundError } from 'src/shared/domain/errors/not-found.error';
 
-export class AccountNotFoundError extends DomainError {
+export class AccountNotFoundError extends NotFoundError {
   constructor() {
     super('Account not found');
   }

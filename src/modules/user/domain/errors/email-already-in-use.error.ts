@@ -1,6 +1,6 @@
-import { DomainError } from 'src/shared/domain/errors/domain.error';
+import { ConflictError } from 'src/shared/domain/errors/conflict.error';
 
-export class EmailAlreadyInUseError extends DomainError {
+export class EmailAlreadyInUseError extends ConflictError {
   constructor() {
     super('Email already in use');
   }

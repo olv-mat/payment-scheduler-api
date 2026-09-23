@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountModule } from './modules/account/account.module';
 import { AccountTypeOrmEntity } from './modules/account/infrastructure/persistence/account.typeorm.entity';
@@ -7,6 +8,7 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
 import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/user.typeorm.entity';
 import { UserModule } from './modules/user/user.module';
 import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
+import { GlobalExceptionFilter } from './shared/presentation/filters/global-exception.filter';
 
 @Module({
   imports: [
@@ -31,6 +33,11 @@ import { CryptographyModule } from './shared/infrastructure/cryptography/cryptog
     AccountModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
