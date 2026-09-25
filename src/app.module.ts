@@ -9,6 +9,7 @@ import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/use
 import { UserModule } from './modules/user/user.module';
 import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
 import { GlobalExceptionFilter } from './shared/presentation/filters/global-exception.filter';
+import { ScheduleModule } from './modules/schedule/schedule.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { GlobalExceptionFilter } from './shared/presentation/filters/global-exce
     CryptographyModule,
     AuthenticationModule,
     AccountModule,
+    ScheduleModule,
   ],
   controllers: [],
   providers: [
