@@ -36,8 +36,8 @@ export class AccountTypeOrmRepository implements AccountRepository {
     await this.accountRepository.update(id, { balance });
   }
 
-  private toDomain(entity: AccountTypeOrmEntity): AccountEntity {
-    const { id, number, balance, user } = entity;
+  private toDomain(accountTypeOrmEntity: AccountTypeOrmEntity): AccountEntity {
+    const { id, number, balance, user } = accountTypeOrmEntity;
     return new AccountEntity(id, number, balance, user);
   }
 }

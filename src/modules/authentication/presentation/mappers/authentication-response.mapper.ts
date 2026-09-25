@@ -4,11 +4,11 @@ import { AuthenticationResponseDto } from '../dtos/authentication-response.dto';
 
 export class AuthenticationResponseMapper {
   public static fromAuthenticationResult(
-    result: AuthenticationResult,
+    authenticationResult: AuthenticationResult,
   ): AuthenticationResponseDto {
     return new AuthenticationResponseDto({
-      user: UserResponseMapper.fromEntity(result.user),
-      token: result.token,
+      user: UserResponseMapper.fromEntity(authenticationResult.user),
+      token: authenticationResult.token,
     });
   }
 }

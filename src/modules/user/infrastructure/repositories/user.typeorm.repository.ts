@@ -42,8 +42,8 @@ export class UserTypeOrmRepository implements UserRepository {
     await this.userRepository.delete(id);
   }
 
-  private toDomain(entity: UserTypeOrmEntity): UserEntity {
-    const { id, name, email, password } = entity;
+  private toDomain(userTypeOrmEntity: UserTypeOrmEntity): UserEntity {
+    const { id, name, email, password } = userTypeOrmEntity;
     return new UserEntity(id, name, email, password);
   }
 }
