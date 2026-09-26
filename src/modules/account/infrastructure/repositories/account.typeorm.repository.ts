@@ -37,7 +37,7 @@ export class AccountTypeOrmRepository implements AccountRepository {
   }
 
   private toDomain(accountTypeOrmEntity: AccountTypeOrmEntity): AccountEntity {
-    const { id, number, balance, user } = accountTypeOrmEntity;
-    return new AccountEntity(id, number, balance, user);
+    const { id, balance, user } = accountTypeOrmEntity;
+    return new AccountEntity(id, balance, user);
   }
 }

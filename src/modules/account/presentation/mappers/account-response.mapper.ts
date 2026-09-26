@@ -5,7 +5,6 @@ export class AccountResponseMapper {
   public static fromEntity(accountEntity: AccountEntity): AccountResponseDto {
     return new AccountResponseDto({
       id: accountEntity.id,
-      number: accountEntity.number,
       balance: accountEntity.balance,
     });
   }
