@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountModule } from './modules/account/account.module';
 import { AccountTypeOrmEntity } from './modules/account/infrastructure/persistence/account.typeorm.entity';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
+import { ScheduleTypeOrmEntity } from './modules/schedule/infrastructure/persistence/schedule.typeorm.entity';
+import { ScheduleModule } from './modules/schedule/schedule.module';
 import { UserTypeOrmEntity } from './modules/user/infrastructure/persistence/user.typeorm.entity';
 import { UserModule } from './modules/user/user.module';
 import { CryptographyModule } from './shared/infrastructure/cryptography/cryptography.module';
 import { GlobalExceptionFilter } from './shared/presentation/filters/global-exception.filter';
-import { ScheduleModule } from './modules/schedule/schedule.module';
 
 @Module({
   imports: [
@@ -23,7 +24,11 @@ import { ScheduleModule } from './modules/schedule/schedule.module';
         username: configService.getOrThrow<string>('DATABASE_USERNAME'),
         password: configService.getOrThrow<string>('DATABASE_PASSWORD'),
         database: configService.getOrThrow<string>('DATABASE_NAME'),
-        entities: [UserTypeOrmEntity, AccountTypeOrmEntity],
+        entities: [
+          UserTypeOrmEntity,
+          AccountTypeOrmEntity,
+          ScheduleTypeOrmEntity,
+        ],
         autoLoadEntities: false,
         synchronize: true,
       }),
