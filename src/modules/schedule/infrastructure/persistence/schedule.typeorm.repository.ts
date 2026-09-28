@@ -27,7 +27,7 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     receiver: AccountEntity,
   ): Promise<ScheduleEntity[]> {
     const scheduleEntities = await this.scheduleRepository.find({
-      where: { payer: { id: receiver.id } },
+      where: { receiver: { id: receiver.id } },
       relations: SCHEDULE_RELATIONS,
     });
     return scheduleEntities.map((scheduleEntity) =>
