@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../user/user.module';
 import { CreateAccountUseCase } from './application/use-cases/create-account.usecase';
+import { FindAccountByIdUseCase } from './application/use-cases/find-account-by-id.usecase';
 import { FindAccountByOwnerUseCase } from './application/use-cases/find-account-by-owner.usecase';
 import { UpdateAccountBalanceUseCase } from './application/use-cases/update-account-balance.usecase';
 import { AccountRepository } from './domain/repositories/account.repository';
@@ -18,6 +19,7 @@ import { AccountController } from './presentation/account.controller';
   controllers: [AccountController],
   providers: [
     CreateAccountUseCase,
+    FindAccountByIdUseCase,
     FindAccountByOwnerUseCase,
     UpdateAccountBalanceUseCase,
     AccountMapper,
@@ -28,6 +30,7 @@ import { AccountController } from './presentation/account.controller';
   ],
   exports: [
     CreateAccountUseCase,
+    FindAccountByIdUseCase,
     FindAccountByOwnerUseCase,
     UpdateAccountBalanceUseCase,
     AccountMapper,
