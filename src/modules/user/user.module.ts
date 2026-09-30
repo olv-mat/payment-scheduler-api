@@ -34,6 +34,6 @@ import { UserController } from './presentation/user.controller';
       useClass: UserTypeOrmRepository,
     },
   ],
-  exports: [FindUserByEmailUseCase, CreateUserUseCase, UserMapper],
+  exports: [CreateUserUseCase, FindUserByEmailUseCase, UserMapper],
 })
 export class UserModule {}
