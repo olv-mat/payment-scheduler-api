@@ -14,7 +14,7 @@ export class CreateScheduleDto implements CreateScheduleInput {
   public readonly value!: number;
 
   @IsDate()
-  @MinDate(() => new Date())
+  @MinDate(() => new Date(), { message: 'scheduledFor must be a future date' })
   @Type(() => Date)
   public readonly scheduledFor!: Date;
 }

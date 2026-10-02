@@ -1,10 +1,9 @@
-import { AccountResponseDto } from 'src/modules/account/presentation/dtos/account-response.dto';
 import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 
 type ScheduleResponseProperties = {
   id: string;
-  payer: AccountResponseDto;
-  receiver: AccountResponseDto;
+  payer: string;
+  receiver: string;
   value: number;
   scheduledFor: Date;
   status: ScheduleStatus;
@@ -12,8 +11,8 @@ type ScheduleResponseProperties = {
 
 export class ScheduleResponseDto {
   public readonly id: string;
-  public readonly payer: AccountResponseDto;
-  public readonly receiver: AccountResponseDto;
+  public readonly payer: string;
+  public readonly receiver: string;
   public readonly value: number;
   public readonly scheduledFor: Date;
   public readonly status: ScheduleStatus;
