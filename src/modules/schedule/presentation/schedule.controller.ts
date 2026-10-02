@@ -8,6 +8,7 @@ import {
   SwaggerNotFound,
   SwaggerOperation,
   SwaggerUnauthorized,
+  SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 import { CreateScheduleUseCase } from '../application/use-cases/create-schedule.usecase';
 import { FindAllSchedulesByAccountUseCase } from '../application/use-cases/find-all-schedules-by-account.usecase';
@@ -42,6 +43,10 @@ export class ScheduleController {
   }
 
   @Post()
+  @SwaggerOperation('Create a schedule')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerUnprocessableEntity('Payer and receiver must be different accounts')
+  @SwaggerInternalServerError()
   public async create(
     @Body() dto: CreateScheduleDto,
   ): Promise<ScheduleResponseDto> {
