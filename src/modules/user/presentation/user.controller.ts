@@ -8,7 +8,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { FindAccountByOwnerUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner.usecase';
+import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
+import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
 import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-response.dto';
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
 import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
@@ -50,6 +52,19 @@ export class UserController {
   public async findAll(): Promise<UserResponseDto[]> {
     const userEntities = await this.findAllUsersUseCase.execute();
     return UserResponseMapper.fromEntities(userEntities);
+  }
+
+  @Get('/me')
+  public async findMe(
+    @CurrentUser() user: AccessTokenPayload,
+  ): Promise<UserWithAccountResponseDto> {
+    const userEntity = await this.findUserByIdUseCase.execute(user.sub);
+    const accountEntity =
+      await this.findAccountByOwnerUseCase.execute(userEntity);
+    return UserWithAccountResponseMapper.fromEntities(
+      userEntity,
+      accountEntity,
+    );
   }
 
   @Get(':id')
