@@ -55,6 +55,10 @@ export class UserController {
   }
 
   @Get('/me')
+  @SwaggerOperation('Retrieve the current user with account')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerNotFound('User not found')
+  @SwaggerInternalServerError()
   public async findMe(
     @CurrentUser() user: AccessTokenPayload,
   ): Promise<UserWithAccountResponseDto> {
