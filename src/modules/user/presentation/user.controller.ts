@@ -59,7 +59,7 @@ export class UserController {
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not found')
   @SwaggerInternalServerError()
-  public async findMe(
+  public async find(
     @CurrentUser() user: AccessTokenPayload,
   ): Promise<UserWithAccountResponseDto> {
     const userEntity = await this.findUserByIdUseCase.execute(user.sub);
@@ -88,18 +88,18 @@ export class UserController {
     );
   }
 
-  @Patch(':id')
-  @SwaggerOperation('Update a specific user')
+  @Patch('/me')
+  @SwaggerOperation('Update the current user user')
   @SwaggerBadRequest('At least one field must be provided')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
   @SwaggerConflict('Email already in use')
   @SwaggerInternalServerError()
   public async update(
-    @Param() { id }: IdDto,
+    @CurrentUser() user: AccessTokenPayload,
     @Body(new AtLeastOneFieldPipe()) dto: UpdateUserDto,
   ): Promise<DefaultResponseDto> {
-    await this.updateUserUseCase.execute(id, dto);
+    await this.updateUserUseCase.execute(user.sub, dto);
     return DefaultResponseDto.create('User updated successfully');
   }
 
