@@ -8,14 +8,14 @@ import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 @Index(['receiver'])
 export class ScheduleTypeOrmEntity extends BaseTypeOrmEntity {
   @ManyToOne(() => AccountTypeOrmEntity, {
-    onDelete: 'RESTRICT',
+    onDelete: 'CASCADE',
     nullable: false,
   })
   @JoinColumn({ name: 'payer_id' })
   public payer!: AccountTypeOrmEntity;
 
   @ManyToOne(() => AccountTypeOrmEntity, {
-    onDelete: 'RESTRICT',
+    onDelete: 'CASCADE',
     nullable: false,
   })
   @JoinColumn({ name: 'receiver_id' })

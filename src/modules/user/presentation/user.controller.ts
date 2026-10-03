@@ -89,7 +89,7 @@ export class UserController {
   }
 
   @Patch('/me')
-  @SwaggerOperation('Update the current user user')
+  @SwaggerOperation('Update the current user')
   @SwaggerBadRequest('At least one field must be provided')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
@@ -103,13 +103,15 @@ export class UserController {
     return DefaultResponseDto.create('User updated successfully');
   }
 
-  @Delete(':id')
-  @SwaggerOperation('Delete a specific user')
+  @Delete('/me')
+  @SwaggerOperation('Delete the current user')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
   @SwaggerInternalServerError()
-  public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {
-    await this.deleteUserUseCase.execute(id);
+  public async delete(
+    @CurrentUser() user: AccessTokenPayload,
+  ): Promise<DefaultResponseDto> {
+    await this.deleteUserUseCase.execute(user.sub);
     return DefaultResponseDto.create('User deleted successfully');
   }
 }
