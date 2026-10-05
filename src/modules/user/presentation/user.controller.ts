@@ -7,7 +7,7 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { FindAccountByOwnerUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner.usecase';
+import { FindAccountByOwnerIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner-id.usecase';
 import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
@@ -40,7 +40,7 @@ export class UserController {
   constructor(
     private readonly findAllUsersUseCase: FindAllUsersUseCase,
     private readonly findUserByIdUseCase: FindUserByIdUseCase,
-    private readonly findAccountByOwnerUseCase: FindAccountByOwnerUseCase,
+    private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
   ) {}
@@ -63,8 +63,9 @@ export class UserController {
     @CurrentUser() user: AccessTokenPayload,
   ): Promise<UserWithAccountResponseDto> {
     const userEntity = await this.findUserByIdUseCase.execute(user.sub);
-    const accountEntity =
-      await this.findAccountByOwnerUseCase.execute(userEntity);
+    const accountEntity = await this.findAccountByOwnerIdUseCase.execute(
+      userEntity.id,
+    );
     return UserWithAccountResponseMapper.fromEntities(
       userEntity,
       accountEntity,
@@ -80,8 +81,9 @@ export class UserController {
     @Param() { id }: IdDto,
   ): Promise<UserWithAccountResponseDto> {
     const userEntity = await this.findUserByIdUseCase.execute(id);
-    const accountEntity =
-      await this.findAccountByOwnerUseCase.execute(userEntity);
+    const accountEntity = await this.findAccountByOwnerIdUseCase.execute(
+      userEntity.id,
+    );
     return UserWithAccountResponseMapper.fromEntities(
       userEntity,
       accountEntity,
