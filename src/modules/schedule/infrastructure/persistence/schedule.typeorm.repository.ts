@@ -1,5 +1,4 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { AccountEntity } from 'src/modules/account/domain/entities/account.entity';
 import { Repository } from 'typeorm';
 import { ScheduleEntity } from '../../domain/entities/schedule.entity';
 import { ScheduleRepository } from '../../domain/repositories/schedule.repository';
@@ -14,9 +13,9 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     private readonly scheduleMapper: ScheduleMapper,
   ) {}
 
-  public async findByPayer(payer: AccountEntity): Promise<ScheduleEntity[]> {
+  public async findByPayerId(payerId: string): Promise<ScheduleEntity[]> {
     const scheduleEntities = await this.scheduleRepository.find({
-      where: { payer: { id: payer.id } },
+      where: { payer: { id: payerId } },
       relations: SCHEDULE_RELATIONS,
     });
     return scheduleEntities.map((scheduleEntity) =>
@@ -24,11 +23,9 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     );
   }
 
-  public async findByReceiver(
-    receiver: AccountEntity,
-  ): Promise<ScheduleEntity[]> {
+  public async findByReceiverId(receiverId: string): Promise<ScheduleEntity[]> {
     const scheduleEntities = await this.scheduleRepository.find({
-      where: { receiver: { id: receiver.id } },
+      where: { receiver: { id: receiverId } },
       relations: SCHEDULE_RELATIONS,
     });
     return scheduleEntities.map((scheduleEntity) =>

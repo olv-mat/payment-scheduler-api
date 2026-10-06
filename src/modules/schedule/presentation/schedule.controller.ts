@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { FindAccountByIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-id.usecase';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { FindAccountByOwnerIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner-id.usecase';
+import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
-import { IdDto } from 'src/shared/presentation/dtos/id.dto';
+import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
 import {
   SwaggerBearerAuth,
   SwaggerInternalServerError,
@@ -11,7 +12,7 @@ import {
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 import { CreateScheduleUseCase } from '../application/use-cases/create-schedule.usecase';
-import { FindAllSchedulesByAccountUseCase } from '../application/use-cases/find-all-schedules-by-account.usecase';
+import { FindAllSchedulesByAccountIdUseCase } from '../application/use-cases/find-all-schedules-by-account-id.usecase';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
 import { ScheduleResponseDto } from './dtos/schedule-response.dto';
 import { ScheduleResponseMapper } from './mappers/schedule-response.mapper';
@@ -21,24 +22,22 @@ import { ScheduleResponseMapper } from './mappers/schedule-response.mapper';
 @SwaggerBearerAuth()
 export class ScheduleController {
   constructor(
-    private readonly findAccountByIdUseCase: FindAccountByIdUseCase,
-    private readonly findAllSchedulesByAccountUseCase: FindAllSchedulesByAccountUseCase,
+    private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
+    private readonly findAllSchedulesByAccountIdUseCase: FindAllSchedulesByAccountIdUseCase,
     private readonly createScheduleUseCase: CreateScheduleUseCase,
   ) {}
 
-  @Get('/account/:id')
-  @SwaggerOperation(
-    'Retrieve all schedules where the account is the payer or the receiver',
-  )
+  @Get('/me')
+  @SwaggerOperation('Retrieve the current account schedules')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerInternalServerError()
   public async findAllByAccount(
-    @Param() { id }: IdDto,
+    @CurrentUser() { sub }: AccessTokenPayload,
   ): Promise<ScheduleResponseDto[]> {
-    const accountEntity = await this.findAccountByIdUseCase.execute(id);
+    const { id } = await this.findAccountByOwnerIdUseCase.execute(sub);
     const scheduleEntities =
-      await this.findAllSchedulesByAccountUseCase.execute(accountEntity);
+      await this.findAllSchedulesByAccountIdUseCase.execute(id);
     return ScheduleResponseMapper.fromEntities(scheduleEntities);
   }
 
