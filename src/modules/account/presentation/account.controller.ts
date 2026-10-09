@@ -11,7 +11,6 @@ import {
   SwaggerUnauthorized,
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
-import { FindAccountByOwnerIdUseCase } from '../application/use-cases/find-account-by-owner-id.usecase';
 import { UpdateAccountBalanceUseCase } from '../application/use-cases/update-account-balance.usecase';
 import { ValueDto } from './dtos/value.dto';
 
@@ -20,7 +19,6 @@ import { ValueDto } from './dtos/value.dto';
 @SwaggerBearerAuth()
 export class AccountController {
   constructor(
-    private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
     private readonly updateAccountBalanceUseCase: UpdateAccountBalanceUseCase,
   ) {}
 
@@ -31,11 +29,10 @@ export class AccountController {
   @SwaggerUnprocessableEntity('Insufficient account balance')
   @SwaggerInternalServerError()
   public async updateBalance(
-    @CurrentUser() user: AccessTokenPayload,
+    @CurrentUser() { sub }: AccessTokenPayload,
     @Body() dto: ValueDto,
   ): Promise<DefaultResponseDto> {
-    const { id } = await this.findAccountByOwnerIdUseCase.execute(user.sub);
-    await this.updateAccountBalanceUseCase.execute(id, dto);
+    await this.updateAccountBalanceUseCase.execute(sub, dto);
     return DefaultResponseDto.create('Account balance updated successfully');
   }
 }

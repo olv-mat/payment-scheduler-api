@@ -1,5 +1,4 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/modules/user/domain/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../../domain/entities/account.entity';
 import { AccountRepository } from '../../domain/repositories/account.repository';
@@ -24,17 +23,17 @@ export class AccountTypeOrmRepository implements AccountRepository {
     return accountEntity ? this.accountMapper.toDomain(accountEntity) : null;
   }
 
-  public async findByOwnerId(ownerId: string): Promise<AccountEntity | null> {
+  public async findByOwner(owner: string): Promise<AccountEntity | null> {
     const accountEntity = await this.accountRepository.findOne({
-      where: { user: { id: ownerId } },
+      where: { user: { id: owner } },
       relations: ACCOUNT_RELATIONS,
     });
     return accountEntity ? this.accountMapper.toDomain(accountEntity) : null;
   }
 
-  public async create(owner: UserEntity): Promise<AccountEntity> {
+  public async create(owner: string): Promise<AccountEntity> {
     const created = await this.accountRepository.save({
-      user: { id: owner.id },
+      user: { id: owner },
     });
     const accountEntity = await this.accountRepository.findOne({
       where: { id: created.id },

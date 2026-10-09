@@ -8,9 +8,9 @@ import { ValueInput } from '../../domain/types/value-input.type';
 export class UpdateAccountBalanceUseCase {
   constructor(private readonly accountRepository: AccountRepository) {}
 
-  public async execute(id: string, input: ValueInput): Promise<void> {
+  public async execute(owner: string, input: ValueInput): Promise<void> {
     const { value } = input;
-    const accountEntity = await this.accountRepository.findById(id);
+    const accountEntity = await this.accountRepository.findByOwner(owner);
     if (!accountEntity) throw new AccountNotFoundError();
     const newBalance = accountEntity.balance + value;
     if (newBalance < 0) throw new InsufficientAccountBalanceError();

@@ -4,11 +4,11 @@ import { AccountNotFoundError } from '../../domain/errors/account-not-found.erro
 import { AccountRepository } from '../../domain/repositories/account.repository';
 
 @Injectable()
-export class FindAccountByOwnerIdUseCase {
+export class FindAccountByOwnerUseCase {
   constructor(private readonly accountRepository: AccountRepository) {}
 
-  public async execute(ownerId: string): Promise<AccountEntity> {
-    const accountEntity = await this.accountRepository.findByOwnerId(ownerId);
+  public async execute(owner: string): Promise<AccountEntity> {
+    const accountEntity = await this.accountRepository.findByOwner(owner);
     if (!accountEntity) throw new AccountNotFoundError();
     return accountEntity;
   }

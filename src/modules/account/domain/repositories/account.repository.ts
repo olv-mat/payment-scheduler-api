@@ -1,9 +1,8 @@
-import { UserEntity } from 'src/modules/user/domain/entities/user.entity';
 import { AccountEntity } from '../entities/account.entity';
 
 export abstract class AccountRepository {
   public abstract findById(id: string): Promise<AccountEntity | null>;
-  public abstract findByOwnerId(ownerId: string): Promise<AccountEntity | null>;
-  public abstract create(owner: UserEntity): Promise<AccountEntity>;
+  public abstract findByOwner(owner: string): Promise<AccountEntity | null>;
+  public abstract create(owner: string): Promise<AccountEntity>;
   public abstract setBalance(id: string, balance: number): Promise<void>;
 }
