@@ -7,7 +7,7 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { FindAccountByOwnerIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner-id.usecase';
+import { FindAccountByOwnerUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner.usecase';
 import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
@@ -40,7 +40,7 @@ export class UserController {
   constructor(
     private readonly findAllUsersUseCase: FindAllUsersUseCase,
     private readonly findUserByIdUseCase: FindUserByIdUseCase,
-    private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
+    private readonly findAccountByOwnerUseCase: FindAccountByOwnerUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
   ) {}
@@ -55,15 +55,15 @@ export class UserController {
   }
 
   @Get('/me')
-  @SwaggerOperation('Retrieve the current user with account')
+  @SwaggerOperation('Retrieve the current user')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not found')
   @SwaggerInternalServerError()
   public async find(
-    @CurrentUser() user: AccessTokenPayload,
+    @CurrentUser() { sub }: AccessTokenPayload,
   ): Promise<UserWithAccountResponseDto> {
-    const userEntity = await this.findUserByIdUseCase.execute(user.sub);
-    const accountEntity = await this.findAccountByOwnerIdUseCase.execute(
+    const userEntity = await this.findUserByIdUseCase.execute(sub);
+    const accountEntity = await this.findAccountByOwnerUseCase.execute(
       userEntity.id,
     );
     return UserWithAccountResponseMapper.fromEntities(
@@ -73,7 +73,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @SwaggerOperation('Retrieve a specific user with account')
+  @SwaggerOperation('Retrieve a specific user')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not found')
   @SwaggerInternalServerError()
@@ -81,7 +81,7 @@ export class UserController {
     @Param() { id }: IdDto,
   ): Promise<UserWithAccountResponseDto> {
     const userEntity = await this.findUserByIdUseCase.execute(id);
-    const accountEntity = await this.findAccountByOwnerIdUseCase.execute(
+    const accountEntity = await this.findAccountByOwnerUseCase.execute(
       userEntity.id,
     );
     return UserWithAccountResponseMapper.fromEntities(
@@ -98,10 +98,10 @@ export class UserController {
   @SwaggerConflict('Email already in use')
   @SwaggerInternalServerError()
   public async update(
-    @CurrentUser() user: AccessTokenPayload,
+    @CurrentUser() { sub }: AccessTokenPayload,
     @Body(new AtLeastOneFieldPipe()) dto: UpdateUserDto,
   ): Promise<DefaultResponseDto> {
-    await this.updateUserUseCase.execute(user.sub, dto);
+    await this.updateUserUseCase.execute(sub, dto);
     return DefaultResponseDto.create('User updated successfully');
   }
 
@@ -111,9 +111,9 @@ export class UserController {
   @SwaggerNotFound('User not Found')
   @SwaggerInternalServerError()
   public async delete(
-    @CurrentUser() user: AccessTokenPayload,
+    @CurrentUser() { sub }: AccessTokenPayload,
   ): Promise<DefaultResponseDto> {
-    await this.deleteUserUseCase.execute(user.sub);
+    await this.deleteUserUseCase.execute(sub);
     return DefaultResponseDto.create('User deleted successfully');
   }
 }

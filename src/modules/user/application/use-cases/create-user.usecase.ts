@@ -22,7 +22,7 @@ export class CreateUserUseCase {
       ...input,
       password: await this.cryptographyHasher.hash(password),
     });
-    await this.createAccountUseCase.execute(userEntity);
+    await this.createAccountUseCase.execute(userEntity.id);
     return userEntity;
   }
 }
