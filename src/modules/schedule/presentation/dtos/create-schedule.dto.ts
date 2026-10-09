@@ -4,9 +4,6 @@ import { CreateScheduleInput } from '../../domain/types/create-schedule-input';
 
 export class CreateScheduleDto implements CreateScheduleInput {
   @IsUUID()
-  public readonly payer!: string;
-
-  @IsUUID()
   public readonly receiver!: string;
 
   @IsInt()

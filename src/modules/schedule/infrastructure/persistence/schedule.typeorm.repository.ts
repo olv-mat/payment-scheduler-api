@@ -13,9 +13,9 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     private readonly scheduleMapper: ScheduleMapper,
   ) {}
 
-  public async findByPayerId(payerId: string): Promise<ScheduleEntity[]> {
+  public async findByPayer(payer: string): Promise<ScheduleEntity[]> {
     const scheduleEntities = await this.scheduleRepository.find({
-      where: { payer: { id: payerId } },
+      where: { payer: { id: payer } },
       relations: SCHEDULE_RELATIONS,
     });
     return scheduleEntities.map((scheduleEntity) =>
@@ -23,27 +23,20 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     );
   }
 
-  public async findByReceiverId(receiverId: string): Promise<ScheduleEntity[]> {
-    const scheduleEntities = await this.scheduleRepository.find({
-      where: { receiver: { id: receiverId } },
-      relations: SCHEDULE_RELATIONS,
-    });
-    return scheduleEntities.map((scheduleEntity) =>
-      this.scheduleMapper.toDomain(scheduleEntity),
-    );
-  }
-
-  public async create(input: CreateScheduleInput): Promise<ScheduleEntity> {
-    const created = await this.scheduleRepository.save(
+  public async create(
+    payer: string,
+    input: CreateScheduleInput,
+  ): Promise<ScheduleEntity> {
+    const { id } = await this.scheduleRepository.save(
       this.scheduleRepository.create({
-        payer: { id: input.payer },
+        payer: { id: payer },
         receiver: { id: input.receiver },
         value: input.value,
         scheduledFor: input.scheduledFor,
       }),
     );
     const scheduleEntity = await this.scheduleRepository.findOne({
-      where: { id: created.id },
+      where: { id },
       relations: SCHEDULE_RELATIONS,
     });
     return this.scheduleMapper.toDomain(scheduleEntity!);
