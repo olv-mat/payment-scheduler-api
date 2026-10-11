@@ -1,0 +1,12 @@
+name: payment-scheduler
+services:
+  app:
+    build: .
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+  redis:
+    image: redis
