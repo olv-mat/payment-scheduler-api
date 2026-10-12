@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AccountNotFoundError } from '../../domain/errors/account-not-found.error';
+import { AccountEntity } from '../../domain/entities/account.entity';
 import { InsufficientAccountBalanceError } from '../../domain/errors/insufficient-account-balance.error';
 import { AccountRepository } from '../../domain/repositories/account.repository';
 import { ValueInput } from '../../domain/types/value-input.type';
@@ -8,12 +8,12 @@ import { ValueInput } from '../../domain/types/value-input.type';
 export class UpdateAccountBalanceUseCase {
   constructor(private readonly accountRepository: AccountRepository) {}
 
-  public async execute(owner: string, input: ValueInput): Promise<void> {
-    const { value } = input;
-    const accountEntity = await this.accountRepository.findByOwner(owner);
-    if (!accountEntity) throw new AccountNotFoundError();
-    const newBalance = accountEntity.balance + value;
-    if (newBalance < 0) throw new InsufficientAccountBalanceError();
-    await this.accountRepository.setBalance(accountEntity.id, newBalance);
+  public async execute(
+    accountEntity: AccountEntity,
+    input: ValueInput,
+  ): Promise<void> {
+    const updatedBalance = accountEntity.balance + input.value;
+    if (updatedBalance < 0) throw new InsufficientAccountBalanceError();
+    await this.accountRepository.setBalance(accountEntity.id, updatedBalance);
   }
 }

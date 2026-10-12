@@ -32,6 +32,7 @@ import { AccountController } from './presentation/account.controller';
     CreateAccountUseCase,
     FindAccountByIdUseCase,
     FindAccountByOwnerUseCase,
+    UpdateAccountBalanceUseCase,
     AccountMapper,
   ],
 })
