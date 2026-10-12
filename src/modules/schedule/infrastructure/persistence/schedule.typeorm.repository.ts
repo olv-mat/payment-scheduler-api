@@ -1,6 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ScheduleEntity } from '../../domain/entities/schedule.entity';
+import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 import { ScheduleRepository } from '../../domain/repositories/schedule.repository';
 import { CreateScheduleInput } from '../../domain/types/create-schedule-input';
 import { SCHEDULE_RELATIONS, ScheduleMapper } from './schedule.mapper';
@@ -12,6 +13,14 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     private readonly scheduleRepository: Repository<ScheduleTypeOrmEntity>,
     private readonly scheduleMapper: ScheduleMapper,
   ) {}
+
+  public async findById(id: string): Promise<ScheduleEntity | null> {
+    const scheduleEntity = await this.scheduleRepository.findOne({
+      where: { id: id },
+      relations: SCHEDULE_RELATIONS,
+    });
+    return scheduleEntity ? this.scheduleMapper.toDomain(scheduleEntity) : null;
+  }
 
   public async findByPayer(payer: string): Promise<ScheduleEntity[]> {
     const scheduleEntities = await this.scheduleRepository.find({
@@ -36,9 +45,13 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
       }),
     );
     const scheduleEntity = await this.scheduleRepository.findOne({
-      where: { id },
+      where: { id: id },
       relations: SCHEDULE_RELATIONS,
     });
     return this.scheduleMapper.toDomain(scheduleEntity!);
+  }
+
+  public async updateStatus(id: string, status: ScheduleStatus): Promise<void> {
+    await this.scheduleRepository.update(id, { status: status });
   }
 }

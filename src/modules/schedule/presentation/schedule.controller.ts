@@ -39,7 +39,7 @@ export class ScheduleController {
   }
 
   @Post()
-  @SwaggerOperation('Create a schedule for the current user')
+  @SwaggerOperation('Create and enqueue a schedule for the current user')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerUnprocessableEntity('Payer and receiver must be different accounts')
