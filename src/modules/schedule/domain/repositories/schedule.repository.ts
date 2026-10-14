@@ -4,7 +4,7 @@ import { CreateScheduleInput } from '../types/create-schedule-input';
 
 export abstract class ScheduleRepository {
   public abstract findById(id: string): Promise<ScheduleEntity | null>;
-  public abstract findByPayer(payer: string): Promise<ScheduleEntity[]>;
+  public abstract findByAccountId(accountId: string): Promise<ScheduleEntity[]>;
   public abstract create(
     payer: string,
     input: CreateScheduleInput,

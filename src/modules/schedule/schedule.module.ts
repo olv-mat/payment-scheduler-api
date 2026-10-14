@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountModule } from '../account/account.module';
 import { CreateScheduleUseCase } from './application/use-cases/create-schedule.usecase';
-import { FindSchedulesBySubUseCase } from './application/use-cases/find-schedules-by-sub.usecase';
+import { FindSchedulesByAccountIdUseCase } from './application/use-cases/find-schedules-by-account-id.usecase';
 import { ProcessScheduleUseCase } from './application/use-cases/process-schedule.usecase';
 import { ScheduleQueue } from './domain/queues/schedule.queue';
 import { ScheduleRepository } from './domain/repositories/schedule.repository';
@@ -31,17 +31,11 @@ import { ScheduleController } from './presentation/schedule.controller';
   providers: [
     ScheduleMapper,
     CreateScheduleUseCase,
-    FindSchedulesBySubUseCase,
+    FindSchedulesByAccountIdUseCase,
     ProcessScheduleUseCase,
     ScheduleConsumer,
-    {
-      provide: ScheduleRepository,
-      useClass: ScheduleTypeOrmRepository,
-    },
-    {
-      provide: ScheduleQueue,
-      useClass: ScheduleBullMqQueue,
-    },
+    { provide: ScheduleRepository, useClass: ScheduleTypeOrmRepository },
+    { provide: ScheduleQueue, useClass: ScheduleBullMqQueue },
   ],
 })
 export class ScheduleModule {}

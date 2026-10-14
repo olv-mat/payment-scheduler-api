@@ -22,9 +22,9 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     return scheduleEntity ? this.scheduleMapper.toDomain(scheduleEntity) : null;
   }
 
-  public async findByPayer(payer: string): Promise<ScheduleEntity[]> {
+  public async findByAccountId(accountId: string): Promise<ScheduleEntity[]> {
     const scheduleEntities = await this.scheduleRepository.find({
-      where: { payer: { id: payer } },
+      where: { payer: { id: accountId } },
       relations: SCHEDULE_RELATIONS,
     });
     return scheduleEntities.map((scheduleEntity) =>

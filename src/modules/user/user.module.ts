@@ -1,7 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountModule } from '../account/account.module';
-import { AuthenticationModule } from '../authentication/authentication.module';
 import { CreateUserUseCase } from './application/use-cases/create-user.usecase';
 import { DeleteUserUseCase } from './application/use-cases/delete-user.usecase';
 import { FindAllUsersUseCase } from './application/use-cases/find-all-users.usecase';
@@ -18,7 +17,6 @@ import { UserController } from './presentation/user.controller';
   imports: [
     TypeOrmModule.forFeature([UserTypeOrmEntity]),
     forwardRef(() => AccountModule),
-    forwardRef(() => AuthenticationModule),
   ],
   controllers: [UserController],
   providers: [
@@ -29,10 +27,7 @@ import { UserController } from './presentation/user.controller';
     FindUserByIdUseCase,
     UpdateUserUseCase,
     UserMapper,
-    {
-      provide: UserRepository,
-      useClass: UserTypeOrmRepository,
-    },
+    { provide: UserRepository, useClass: UserTypeOrmRepository },
   ],
   exports: [CreateUserUseCase, FindUserByEmailUseCase, UserMapper],
 })

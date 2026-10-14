@@ -14,6 +14,9 @@ export class UpdateAccountBalanceUseCase {
   ): Promise<void> {
     const updatedBalance = accountEntity.balance + input.value;
     if (updatedBalance < 0) throw new InsufficientAccountBalanceError();
-    await this.accountRepository.setBalance(accountEntity.id, updatedBalance);
+    await this.accountRepository.updateBalance(
+      accountEntity.id,
+      updatedBalance,
+    );
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateAccountUseCase } from 'src/modules/account/application/use-cases/create-account.usecase';
 import { CreateUserUseCase } from 'src/modules/user/application/use-cases/create-user.usecase';
 import { CreateUserInput } from 'src/modules/user/domain/types/create-user-input.type';
 import { CryptographySigner } from 'src/shared/domain/cryptography/signer';
@@ -9,11 +10,13 @@ import { AuthenticationResult } from '../../domain/types/authentication-result.t
 export class RegisterUseCase {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
+    private readonly createAccountUseCase: CreateAccountUseCase,
     private readonly cryptographySigner: CryptographySigner,
   ) {}
 
   public async execute(input: CreateUserInput): Promise<AuthenticationResult> {
     const userEntity = await this.createUserUseCase.execute(input);
+    await this.createAccountUseCase.execute(userEntity.id);
     const token = await this.cryptographySigner.sign<AccessTokenPayload>({
       sub: userEntity.id,
       name: userEntity.name,
