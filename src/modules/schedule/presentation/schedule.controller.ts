@@ -12,7 +12,7 @@ import {
   SwaggerUnauthorized,
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
-import { CreateScheduleUseCase } from '../application/use-cases/create-schedule.usecase';
+import { CreateAndEnqueueScheduleUseCase } from '../application/use-cases/create-and-enqueue-schedule.usecase';
 import { FindSchedulesByAccountIdUseCase } from '../application/use-cases/find-schedules-by-account-id.usecase';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
 import { ScheduleResponseDto } from './dtos/schedule-response.dto';
@@ -26,7 +26,7 @@ export class ScheduleController {
     private readonly findAccountByUserIdUseCase: FindAccountByUserIdUseCase,
     private readonly findAccountByIdUseCase: FindAccountByIdUseCase,
     private readonly findSchedulesByAccountIdUseCase: FindSchedulesByAccountIdUseCase,
-    private readonly createScheduleUseCase: CreateScheduleUseCase,
+    private readonly createAndEnqueueScheduleUseCase: CreateAndEnqueueScheduleUseCase,
   ) {}
 
   @Get('/me')
@@ -58,7 +58,7 @@ export class ScheduleController {
       this.findAccountByIdUseCase.execute(dto.receiver),
     ]);
     return ScheduleResponseMapper.fromEntity(
-      await this.createScheduleUseCase.execute(accountEntities, dto),
+      await this.createAndEnqueueScheduleUseCase.execute(accountEntities, dto),
     );
   }
 }

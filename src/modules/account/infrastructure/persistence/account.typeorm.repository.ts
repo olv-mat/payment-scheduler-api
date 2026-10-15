@@ -32,11 +32,11 @@ export class AccountTypeOrmRepository implements AccountRepository {
   }
 
   public async create(userId: string): Promise<AccountEntity> {
-    const created = await this.accountRepository.save({
+    const { id } = await this.accountRepository.save({
       user: { id: userId },
     });
     const accountEntity = await this.accountRepository.findOne({
-      where: { id: created.id },
+      where: { id: id },
       relations: ACCOUNT_RELATIONS,
     });
     return this.accountMapper.toDomain(accountEntity!);

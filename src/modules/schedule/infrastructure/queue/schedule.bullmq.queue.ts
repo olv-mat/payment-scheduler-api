@@ -9,14 +9,13 @@ export class ScheduleBullMqQueue implements ScheduleQueue {
     private readonly queue: Queue<ScheduleJob>,
   ) {}
 
-  public async enqueue(reference: string, time: Date): Promise<void> {
-    const delay = Math.max(0, time.getTime() - Date.now());
+  public async enqueue(scheduleId: string, delay: number): Promise<void> {
     await this.queue.add(
       'schedule',
-      { reference: reference },
+      { scheduleId: scheduleId },
       {
         delay: delay,
-        jobId: reference,
+        jobId: scheduleId,
       },
     );
   }

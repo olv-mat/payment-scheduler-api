@@ -7,7 +7,7 @@ import { ScheduleRepository } from '../../domain/repositories/schedule.repositor
 import { CreateScheduleInput } from '../../domain/types/create-schedule-input';
 
 @Injectable()
-export class CreateScheduleUseCase {
+export class CreateAndEnqueueScheduleUseCase {
   constructor(
     private readonly scheduleRepository: ScheduleRepository,
     private readonly scheduleQueue: ScheduleQueue,
@@ -23,10 +23,11 @@ export class CreateScheduleUseCase {
       payer.id,
       input,
     );
-    await this.scheduleQueue.enqueue(
-      scheduleEntity.id,
-      scheduleEntity.scheduledFor,
+    const delay = Math.max(
+      0,
+      scheduleEntity.scheduledFor.getTime() - Date.now(),
     );
+    await this.scheduleQueue.enqueue(scheduleEntity.id, delay);
     return scheduleEntity;
   }
 }

@@ -2,9 +2,10 @@ import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountModule } from '../account/account.module';
-import { CreateScheduleUseCase } from './application/use-cases/create-schedule.usecase';
+import { CreateAndEnqueueScheduleUseCase } from './application/use-cases/create-and-enqueue-schedule.usecase';
+import { FindScheduleByIdUseCase } from './application/use-cases/find-schedule-by-id.usecase';
 import { FindSchedulesByAccountIdUseCase } from './application/use-cases/find-schedules-by-account-id.usecase';
-import { ProcessScheduleUseCase } from './application/use-cases/process-schedule.usecase';
+import { UpdateScheduleStatusUseCase } from './application/use-cases/update-schedule-status.usecase';
 import { ScheduleQueue } from './domain/queues/schedule.queue';
 import { ScheduleRepository } from './domain/repositories/schedule.repository';
 import { ScheduleMapper } from './infrastructure/persistence/schedule.mapper';
@@ -30,9 +31,10 @@ import { ScheduleController } from './presentation/schedule.controller';
   controllers: [ScheduleController],
   providers: [
     ScheduleMapper,
-    CreateScheduleUseCase,
+    CreateAndEnqueueScheduleUseCase,
+    FindScheduleByIdUseCase,
     FindSchedulesByAccountIdUseCase,
-    ProcessScheduleUseCase,
+    UpdateScheduleStatusUseCase,
     ScheduleConsumer,
     { provide: ScheduleRepository, useClass: ScheduleTypeOrmRepository },
     { provide: ScheduleQueue, useClass: ScheduleBullMqQueue },

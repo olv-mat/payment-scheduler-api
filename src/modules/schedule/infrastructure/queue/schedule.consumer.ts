@@ -1,7 +1,10 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { ProcessScheduleUseCase } from '../../application/use-cases/process-schedule.usecase';
+import { UpdateAccountBalanceUseCase } from 'src/modules/account/application/use-cases/update-account-balance.usecase';
+import { FindScheduleByIdUseCase } from '../../application/use-cases/find-schedule-by-id.usecase';
+import { UpdateScheduleStatusUseCase } from '../../application/use-cases/update-schedule-status.usecase';
+import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 import { SCHEDULE_QUEUE, ScheduleJob } from './schedule.queue.constants';
 
 @Processor(SCHEDULE_QUEUE, {
@@ -10,14 +13,20 @@ import { SCHEDULE_QUEUE, ScheduleJob } from './schedule.queue.constants';
 export class ScheduleConsumer extends WorkerHost {
   private readonly logger = new Logger(ScheduleConsumer.name);
 
-  constructor(private readonly processScheduleUseCase: ProcessScheduleUseCase) {
+  constructor(
+    private readonly findScheduleByIdUseCase: FindScheduleByIdUseCase,
+    private readonly updateScheduleStatusUseCase: UpdateScheduleStatusUseCase,
+    private readonly updateAccountBalanceUseCase: UpdateAccountBalanceUseCase,
+  ) {
     super();
   }
 
   public async process(job: Job<ScheduleJob>): Promise<void> {
-    const reference = job.data.reference;
-    this.logger.log(`Processing schedule ${reference}`);
-    await this.processScheduleUseCase.execute(reference);
-    this.logger.log(`Processing of schedule ${reference} finished`);
+    const scheduleId = job.data.scheduleId;
+    const { id, payer, receiver, value } =
+      await this.findScheduleByIdUseCase.execute(scheduleId);
+    await this.updateAccountBalanceUseCase.execute(payer, { value: -value });
+    await this.updateAccountBalanceUseCase.execute(receiver, { value: value });
+    await this.updateScheduleStatusUseCase.execute(id, ScheduleStatus.FINISHED);
   }
 }
