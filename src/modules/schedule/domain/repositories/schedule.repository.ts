@@ -13,4 +13,5 @@ export abstract class ScheduleRepository {
     id: string,
     status: ScheduleStatus,
   ): Promise<void>;
+  public abstract delete(id: string): Promise<void>;
 }

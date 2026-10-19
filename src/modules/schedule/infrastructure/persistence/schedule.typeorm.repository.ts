@@ -54,4 +54,8 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
   public async updateStatus(id: string, status: ScheduleStatus): Promise<void> {
     await this.scheduleRepository.update(id, { status: status });
   }
+
+  public async delete(id: string): Promise<void> {
+    await this.scheduleRepository.delete(id);
+  }
 }

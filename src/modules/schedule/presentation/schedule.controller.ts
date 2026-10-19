@@ -1,9 +1,19 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { FindAccountByIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-id.usecase';
 import { FindAccountByUserIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-user-id.usecase';
 import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
+import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-response.dto';
+import { IdDto } from 'src/shared/presentation/dtos/id.dto';
 import {
   SwaggerBearerAuth,
   SwaggerInternalServerError,
@@ -13,6 +23,7 @@ import {
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 import { CreateAndEnqueueScheduleUseCase } from '../application/use-cases/create-and-enqueue-schedule.usecase';
+import { DeleteScheduleUseCase } from '../application/use-cases/delete-schedule.usecase';
 import { FindSchedulesByAccountIdUseCase } from '../application/use-cases/find-schedules-by-account-id.usecase';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
 import { ScheduleResponseDto } from './dtos/schedule-response.dto';
@@ -27,6 +38,7 @@ export class ScheduleController {
     private readonly findAccountByIdUseCase: FindAccountByIdUseCase,
     private readonly findSchedulesByAccountIdUseCase: FindSchedulesByAccountIdUseCase,
     private readonly createAndEnqueueScheduleUseCase: CreateAndEnqueueScheduleUseCase,
+    private readonly deleteScheduleUseCase: DeleteScheduleUseCase,
   ) {}
 
   @Get('/me')
@@ -60,5 +72,15 @@ export class ScheduleController {
     return ScheduleResponseMapper.fromEntity(
       await this.createAndEnqueueScheduleUseCase.execute(accountEntities, dto),
     );
+  }
+
+  @Delete(':id')
+  public async delete(
+    @CurrentUser() { sub }: AccessTokenPayload,
+    @Param() { id }: IdDto,
+  ): Promise<DefaultResponseDto> {
+    const accountEntity = await this.findAccountByUserIdUseCase.execute(sub);
+    await this.deleteScheduleUseCase.execute(accountEntity.id, id);
+    return DefaultResponseDto.create('Schedule deleted successfully');
   }
 }
