@@ -75,6 +75,10 @@ export class ScheduleController {
   }
 
   @Delete(':id')
+  @SwaggerOperation('Delete a specific schedule')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerNotFound('Schedule not found')
+  @SwaggerInternalServerError()
   public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {
     await this.deleteScheduleUseCase.execute(id);
     return DefaultResponseDto.create('Schedule deleted successfully');
