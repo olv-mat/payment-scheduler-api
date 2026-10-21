@@ -75,12 +75,8 @@ export class ScheduleController {
   }
 
   @Delete(':id')
-  public async delete(
-    @CurrentUser() { sub }: AccessTokenPayload,
-    @Param() { id }: IdDto,
-  ): Promise<DefaultResponseDto> {
-    const accountEntity = await this.findAccountByUserIdUseCase.execute(sub);
-    await this.deleteScheduleUseCase.execute(accountEntity.id, id);
+  public async delete(@Param() { id }: IdDto): Promise<DefaultResponseDto> {
+    await this.deleteScheduleUseCase.execute(id);
     return DefaultResponseDto.create('Schedule deleted successfully');
   }
 }
