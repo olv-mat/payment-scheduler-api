@@ -2,6 +2,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
@@ -45,6 +46,17 @@ export const SwaggerUnauthorized = (message: string) => {
     },
   });
 };
+
+export const SwaggerForbidden = (message: string) =>
+  ApiForbiddenResponse({
+    schema: {
+      example: {
+        message: message,
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
+  });
 
 export const SwaggerNotFound = (message: string) => {
   return ApiNotFoundResponse({
