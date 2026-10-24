@@ -7,7 +7,7 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { FindAccountByUserIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-user-id.usecase';
+import { FindAccountByOwnerIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner-id.usecase';
 import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
@@ -40,7 +40,7 @@ export class UserController {
   constructor(
     private readonly findAllUsersUseCase: FindAllUsersUseCase,
     private readonly findUserByIdUseCase: FindUserByIdUseCase,
-    private readonly findAccountByUserIdUseCase: FindAccountByUserIdUseCase,
+    private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
   ) {}
@@ -50,8 +50,9 @@ export class UserController {
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerInternalServerError()
   public async findAll(): Promise<UserResponseDto[]> {
-    const userEntities = await this.findAllUsersUseCase.execute();
-    return UserResponseMapper.fromEntities(userEntities);
+    return UserResponseMapper.fromEntities(
+      await this.findAllUsersUseCase.execute(),
+    );
   }
 
   @Get('/me')
@@ -63,12 +64,9 @@ export class UserController {
     @CurrentUser() { sub }: AccessTokenPayload,
   ): Promise<UserWithAccountResponseDto> {
     const userEntity = await this.findUserByIdUseCase.execute(sub);
-    const accountEntity = await this.findAccountByUserIdUseCase.execute(
-      userEntity.id,
-    );
     return UserWithAccountResponseMapper.fromEntities(
       userEntity,
-      accountEntity,
+      await this.findAccountByOwnerIdUseCase.execute(userEntity.id),
     );
   }
 
@@ -81,12 +79,9 @@ export class UserController {
     @Param() { id }: IdDto,
   ): Promise<UserWithAccountResponseDto> {
     const userEntity = await this.findUserByIdUseCase.execute(id);
-    const accountEntity = await this.findAccountByUserIdUseCase.execute(
-      userEntity.id,
-    );
     return UserWithAccountResponseMapper.fromEntities(
       userEntity,
-      accountEntity,
+      await this.findAccountByOwnerIdUseCase.execute(userEntity.id),
     );
   }
 

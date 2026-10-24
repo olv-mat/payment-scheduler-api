@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { FindAccountByIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-id.usecase';
-import { FindAccountByUserIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-user-id.usecase';
+import { FindAccountByOwnerIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner-id.usecase';
 import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
@@ -22,9 +22,11 @@ import {
   SwaggerUnauthorized,
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
-import { CreateAndEnqueueScheduleUseCase } from '../application/use-cases/create-and-enqueue-schedule.usecase';
+
 import { DeleteScheduleUseCase } from '../application/use-cases/delete-schedule.usecase';
-import { FindSchedulesByAccountIdUseCase } from '../application/use-cases/find-schedules-by-account-id.usecase';
+
+import { CreateScheduleUseCase } from '../application/use-cases/create-schedule.usecase';
+import { FindSchedulesByPayerIdUseCase } from '../application/use-cases/find-schedules-by-payer-id.usecase';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
 import { ScheduleResponseDto } from './dtos/schedule-response.dto';
 import { ScheduleResponseMapper } from './mappers/schedule-response.mapper';
@@ -34,10 +36,10 @@ import { ScheduleResponseMapper } from './mappers/schedule-response.mapper';
 @SwaggerBearerAuth()
 export class ScheduleController {
   constructor(
-    private readonly findAccountByUserIdUseCase: FindAccountByUserIdUseCase,
+    private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
     private readonly findAccountByIdUseCase: FindAccountByIdUseCase,
-    private readonly findSchedulesByAccountIdUseCase: FindSchedulesByAccountIdUseCase,
-    private readonly createAndEnqueueScheduleUseCase: CreateAndEnqueueScheduleUseCase,
+    private readonly findSchedulesByPayerIdUseCase: FindSchedulesByPayerIdUseCase,
+    private readonly createScheduleUseCase: CreateScheduleUseCase,
     private readonly deleteScheduleUseCase: DeleteScheduleUseCase,
   ) {}
 
@@ -49,9 +51,9 @@ export class ScheduleController {
   public async find(
     @CurrentUser() { sub }: AccessTokenPayload,
   ): Promise<ScheduleResponseDto[]> {
-    const { id } = await this.findAccountByUserIdUseCase.execute(sub);
+    const { id } = await this.findAccountByOwnerIdUseCase.execute(sub);
     return ScheduleResponseMapper.fromEntities(
-      await this.findSchedulesByAccountIdUseCase.execute(id),
+      await this.findSchedulesByPayerIdUseCase.execute(id),
     );
   }
 
@@ -65,12 +67,14 @@ export class ScheduleController {
     @CurrentUser() { sub }: AccessTokenPayload,
     @Body() dto: CreateScheduleDto,
   ): Promise<ScheduleResponseDto> {
-    const accountEntities = await Promise.all([
-      this.findAccountByUserIdUseCase.execute(sub),
-      this.findAccountByIdUseCase.execute(dto.receiver),
-    ]);
     return ScheduleResponseMapper.fromEntity(
-      await this.createAndEnqueueScheduleUseCase.execute(accountEntities, dto),
+      await this.createScheduleUseCase.execute(
+        await Promise.all([
+          this.findAccountByOwnerIdUseCase.execute(sub),
+          this.findAccountByIdUseCase.execute(dto.receiver),
+        ]),
+        dto,
+      ),
     );
   }
 

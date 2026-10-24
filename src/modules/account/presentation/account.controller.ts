@@ -11,7 +11,7 @@ import {
   SwaggerUnauthorized,
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
-import { FindAccountByUserIdUseCase } from '../application/use-cases/find-account-by-user-id.usecase';
+import { FindAccountByOwnerIdUseCase } from '../application/use-cases/find-account-by-owner-id.usecase';
 import { UpdateAccountBalanceUseCase } from '../application/use-cases/update-account-balance.usecase';
 import { ValueDto } from './dtos/value.dto';
 
@@ -20,7 +20,7 @@ import { ValueDto } from './dtos/value.dto';
 @SwaggerBearerAuth()
 export class AccountController {
   constructor(
-    private readonly findAccountByUserIdUseCase: FindAccountByUserIdUseCase,
+    private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
     private readonly updateAccountBalanceUseCase: UpdateAccountBalanceUseCase,
   ) {}
 
@@ -34,7 +34,7 @@ export class AccountController {
     @CurrentUser() { sub }: AccessTokenPayload,
     @Body() dto: ValueDto,
   ): Promise<DefaultResponseDto> {
-    const accountEntity = await this.findAccountByUserIdUseCase.execute(sub);
+    const accountEntity = await this.findAccountByOwnerIdUseCase.execute(sub);
     await this.updateAccountBalanceUseCase.execute(accountEntity, dto);
     return DefaultResponseDto.create('Account balance updated successfully');
   }

@@ -6,8 +6,8 @@ import { ScheduleEntity } from '../../domain/entities/schedule.entity';
 import { ScheduleTypeOrmEntity } from './schedule.typeorm.entity';
 
 export const SCHEDULE_RELATIONS: FindOptionsRelations<ScheduleTypeOrmEntity> = {
-  payer: { user: true },
-  receiver: { user: true },
+  payer: { owner: true },
+  receiver: { owner: true },
 };
 
 @Injectable()

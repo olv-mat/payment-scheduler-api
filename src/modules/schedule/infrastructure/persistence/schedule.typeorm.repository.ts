@@ -22,9 +22,9 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     return scheduleEntity ? this.scheduleMapper.toDomain(scheduleEntity) : null;
   }
 
-  public async findByAccountId(accountId: string): Promise<ScheduleEntity[]> {
+  public async findByPayerId(payerId: string): Promise<ScheduleEntity[]> {
     const scheduleEntities = await this.scheduleRepository.find({
-      where: { payer: { id: accountId } },
+      where: { payer: { id: payerId } },
       relations: SCHEDULE_RELATIONS,
     });
     return scheduleEntities.map((scheduleEntity) =>
@@ -33,12 +33,12 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
   }
 
   public async create(
-    payer: string,
+    payerId: string,
     input: CreateScheduleInput,
   ): Promise<ScheduleEntity> {
     const { id } = await this.scheduleRepository.save(
       this.scheduleRepository.create({
-        payer: { id: payer },
+        payer: { id: payerId },
         receiver: { id: input.receiver },
         value: input.value,
         scheduledFor: input.scheduledFor,
@@ -51,11 +51,11 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     return this.scheduleMapper.toDomain(scheduleEntity!);
   }
 
-  public async updateStatus(id: string, status: ScheduleStatus): Promise<void> {
-    await this.scheduleRepository.update(id, { status: status });
-  }
-
   public async delete(id: string): Promise<void> {
     await this.scheduleRepository.delete(id);
+  }
+
+  public async setStatus(id: string, status: ScheduleStatus): Promise<void> {
+    await this.scheduleRepository.update(id, { status: status });
   }
 }

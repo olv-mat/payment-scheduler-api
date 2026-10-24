@@ -13,6 +13,6 @@ export class UserTypeOrmEntity extends BaseTypeOrmEntity {
   @Column({ length: 255, nullable: false })
   public password!: string;
 
-  @OneToOne(() => AccountTypeOrmEntity, (account) => account.user)
+  @OneToOne(() => AccountTypeOrmEntity, (account) => account.owner)
   public account!: AccountTypeOrmEntity;
 }

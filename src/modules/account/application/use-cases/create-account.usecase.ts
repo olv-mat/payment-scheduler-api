@@ -6,7 +6,7 @@ import { AccountRepository } from '../../domain/repositories/account.repository'
 export class CreateAccountUseCase {
   constructor(private readonly accountRepository: AccountRepository) {}
 
-  public execute(userId: string): Promise<AccountEntity> {
-    return this.accountRepository.create(userId);
+  public execute(ownerId: string): Promise<AccountEntity> {
+    return this.accountRepository.create(ownerId);
   }
 }

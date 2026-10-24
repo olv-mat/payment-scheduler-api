@@ -23,17 +23,17 @@ export class AccountTypeOrmRepository implements AccountRepository {
     return accountEntity ? this.accountMapper.toDomain(accountEntity) : null;
   }
 
-  public async findByUserId(userId: string): Promise<AccountEntity | null> {
+  public async findByOwnerId(ownerId: string): Promise<AccountEntity | null> {
     const accountEntity = await this.accountRepository.findOne({
-      where: { user: { id: userId } },
+      where: { owner: { id: ownerId } },
       relations: ACCOUNT_RELATIONS,
     });
     return accountEntity ? this.accountMapper.toDomain(accountEntity) : null;
   }
 
-  public async create(userId: string): Promise<AccountEntity> {
+  public async create(ownerId: string): Promise<AccountEntity> {
     const { id } = await this.accountRepository.save({
-      user: { id: userId },
+      owner: { id: ownerId },
     });
     const accountEntity = await this.accountRepository.findOne({
       where: { id: id },

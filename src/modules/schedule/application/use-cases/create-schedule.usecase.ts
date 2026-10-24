@@ -7,7 +7,7 @@ import { ScheduleRepository } from '../../domain/repositories/schedule.repositor
 import { CreateScheduleInput } from '../../domain/types/create-schedule-input';
 
 @Injectable()
-export class CreateAndEnqueueScheduleUseCase {
+export class CreateScheduleUseCase {
   constructor(
     private readonly scheduleRepository: ScheduleRepository,
     private readonly scheduleQueue: ScheduleQueue,

@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { UpdateAccountBalanceUseCase } from 'src/modules/account/application/use-cases/update-account-balance.usecase';
 import { FindScheduleByIdUseCase } from '../../application/use-cases/find-schedule-by-id.usecase';
-import { UpdateScheduleStatusUseCase } from '../../application/use-cases/update-schedule-status.usecase';
+import { SetScheduleStatusUseCase } from '../../application/use-cases/set-schedule-status.usecase';
 import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 import { SCHEDULE_QUEUE, ScheduleJob } from './schedule.queue.constants';
 
@@ -15,7 +15,7 @@ export class ScheduleConsumer extends WorkerHost {
 
   constructor(
     private readonly findScheduleByIdUseCase: FindScheduleByIdUseCase,
-    private readonly updateScheduleStatusUseCase: UpdateScheduleStatusUseCase,
+    private readonly setScheduleStatusUseCase: SetScheduleStatusUseCase,
     private readonly updateAccountBalanceUseCase: UpdateAccountBalanceUseCase,
   ) {
     super();
@@ -27,6 +27,6 @@ export class ScheduleConsumer extends WorkerHost {
       await this.findScheduleByIdUseCase.execute(scheduleId);
     await this.updateAccountBalanceUseCase.execute(payer, { value: -value });
     await this.updateAccountBalanceUseCase.execute(receiver, { value: value });
-    await this.updateScheduleStatusUseCase.execute(id, ScheduleStatus.FINISHED);
+    await this.setScheduleStatusUseCase.execute(id, ScheduleStatus.FINISHED);
   }
 }

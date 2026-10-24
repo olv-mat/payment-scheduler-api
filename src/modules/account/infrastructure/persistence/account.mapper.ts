@@ -6,7 +6,7 @@ import { AccountEntity } from '../../domain/entities/account.entity';
 import { AccountTypeOrmEntity } from './account.typeorm.entity';
 
 export const ACCOUNT_RELATIONS: FindOptionsRelations<AccountTypeOrmEntity> = {
-  user: true,
+  owner: true,
 };
 
 @Injectable()
@@ -20,7 +20,7 @@ export class AccountMapper implements Mapper<
     return new AccountEntity(
       ormEntity.id,
       ormEntity.balance,
-      this.userMapper.toDomain(ormEntity.user),
+      this.userMapper.toDomain(ormEntity.owner),
     );
   }
 }
