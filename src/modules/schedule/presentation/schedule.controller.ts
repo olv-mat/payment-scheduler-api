@@ -16,6 +16,7 @@ import { CurrentUser } from 'src/shared/presentation/decorators/current-user.dec
 import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-response.dto';
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
 import {
+  SwaggerBadRequest,
   SwaggerBearerAuth,
   SwaggerInternalServerError,
   SwaggerNotFound,
@@ -24,10 +25,9 @@ import {
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 
-import { DeleteScheduleUseCase } from '../application/use-cases/delete-schedule.usecase';
-
 import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
 import { CreateScheduleUseCase } from '../application/use-cases/create-schedule.usecase';
+import { DeleteScheduleUseCase } from '../application/use-cases/delete-schedule.usecase';
 import { FindSchedulesByPayerIdUseCase } from '../application/use-cases/find-schedules-by-payer-id.usecase';
 import { UpdateScheduleUseCase } from '../application/use-cases/update-schedule.usecase';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
@@ -84,6 +84,11 @@ export class ScheduleController {
   }
 
   @Patch(':id')
+  @SwaggerOperation('Delete a specific schedule')
+  @SwaggerBadRequest('At least one field must be provided')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerNotFound('User not Found')
+  @SwaggerInternalServerError()
   public async update(
     @Param() { id }: IdDto,
     @Body(new AtLeastOneFieldPipe()) dto: UpdateScheduleDto,
