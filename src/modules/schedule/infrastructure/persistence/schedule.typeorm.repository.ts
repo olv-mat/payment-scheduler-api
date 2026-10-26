@@ -4,6 +4,7 @@ import { ScheduleEntity } from '../../domain/entities/schedule.entity';
 import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 import { ScheduleRepository } from '../../domain/repositories/schedule.repository';
 import { CreateScheduleInput } from '../../domain/types/create-schedule-input';
+import { UpdateScheduleInput } from '../../domain/types/update-schedule-input';
 import { SCHEDULE_RELATIONS, ScheduleMapper } from './schedule.mapper';
 import { ScheduleTypeOrmEntity } from './schedule.typeorm.entity';
 
@@ -51,11 +52,15 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     return this.scheduleMapper.toDomain(scheduleEntity!);
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.scheduleRepository.delete(id);
-  }
-
   public async setStatus(id: string, status: ScheduleStatus): Promise<void> {
     await this.scheduleRepository.update(id, { status: status });
+  }
+
+  public async update(id: string, input: UpdateScheduleInput): Promise<void> {
+    await this.scheduleRepository.update(id, input);
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.scheduleRepository.delete(id);
   }
 }

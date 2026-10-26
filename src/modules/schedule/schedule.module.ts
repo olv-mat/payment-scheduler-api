@@ -7,6 +7,7 @@ import { DeleteScheduleUseCase } from './application/use-cases/delete-schedule.u
 import { FindScheduleByIdUseCase } from './application/use-cases/find-schedule-by-id.usecase';
 import { FindSchedulesByPayerIdUseCase } from './application/use-cases/find-schedules-by-payer-id.usecase';
 import { SetScheduleStatusUseCase } from './application/use-cases/set-schedule-status.usecase';
+import { UpdateScheduleUseCase } from './application/use-cases/update-schedule.usecase';
 import { ScheduleQueue } from './domain/queues/schedule.queue';
 import { ScheduleRepository } from './domain/repositories/schedule.repository';
 import { ScheduleMapper } from './infrastructure/persistence/schedule.mapper';
@@ -36,6 +37,7 @@ import { ScheduleController } from './presentation/schedule.controller';
     FindScheduleByIdUseCase,
     FindSchedulesByPayerIdUseCase,
     SetScheduleStatusUseCase,
+    UpdateScheduleUseCase,
     DeleteScheduleUseCase,
     ScheduleConsumer,
     { provide: ScheduleRepository, useClass: ScheduleTypeOrmRepository },

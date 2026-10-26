@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -25,10 +26,13 @@ import {
 
 import { DeleteScheduleUseCase } from '../application/use-cases/delete-schedule.usecase';
 
+import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
 import { CreateScheduleUseCase } from '../application/use-cases/create-schedule.usecase';
 import { FindSchedulesByPayerIdUseCase } from '../application/use-cases/find-schedules-by-payer-id.usecase';
+import { UpdateScheduleUseCase } from '../application/use-cases/update-schedule.usecase';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
 import { ScheduleResponseDto } from './dtos/schedule-response.dto';
+import { UpdateScheduleDto } from './dtos/update-schedule.dto';
 import { ScheduleResponseMapper } from './mappers/schedule-response.mapper';
 
 @Controller('schedules')
@@ -40,6 +44,7 @@ export class ScheduleController {
     private readonly findAccountByIdUseCase: FindAccountByIdUseCase,
     private readonly findSchedulesByPayerIdUseCase: FindSchedulesByPayerIdUseCase,
     private readonly createScheduleUseCase: CreateScheduleUseCase,
+    private readonly updateScheduleUseCase: UpdateScheduleUseCase,
     private readonly deleteScheduleUseCase: DeleteScheduleUseCase,
   ) {}
 
@@ -76,6 +81,15 @@ export class ScheduleController {
         dto,
       ),
     );
+  }
+
+  @Patch(':id')
+  public async update(
+    @Param() { id }: IdDto,
+    @Body(new AtLeastOneFieldPipe()) dto: UpdateScheduleDto,
+  ): Promise<DefaultResponseDto> {
+    await this.updateScheduleUseCase.execute(id, dto);
+    return DefaultResponseDto.create('Schedule updated successfully');
   }
 
   @Delete(':id')
