@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import type { AccessTokenPayload } from 'src/modules/authentication/domain/types/access-token-payload.type';
 import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
@@ -11,31 +11,47 @@ import {
   SwaggerUnauthorized,
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
+import { DepositUseCase } from '../application/use-cases/deposit.usecase';
 import { FindAccountByOwnerIdUseCase } from '../application/use-cases/find-account-by-owner-id.usecase';
-import { UpdateAccountBalanceUseCase } from '../application/use-cases/update-account-balance.usecase';
-import { ValueDto } from './dtos/value.dto';
+import { WithdrawUseCase } from '../application/use-cases/withdraw.usecase';
+import { AmountDto } from './dtos/amount.dto';
 
-@Controller('/accounts')
+@Controller('me/account')
 @UseGuards(JwtGuard)
 @SwaggerBearerAuth()
 export class AccountController {
   constructor(
     private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
-    private readonly updateAccountBalanceUseCase: UpdateAccountBalanceUseCase,
+    private readonly depositUseCase: DepositUseCase,
+    private readonly withdrawUseCase: WithdrawUseCase,
   ) {}
 
-  @Patch('me/balance')
-  @SwaggerOperation('Update the current user account balance')
+  @Post('deposits')
+  @SwaggerOperation('Deposit an amount into the current user account')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerNotFound('Account not found')
+  @SwaggerInternalServerError()
+  public async deposit(
+    @CurrentUser() { sub }: AccessTokenPayload,
+    @Body() dto: AmountDto,
+  ): Promise<DefaultResponseDto> {
+    const accountEntity = await this.findAccountByOwnerIdUseCase.execute(sub);
+    await this.depositUseCase.execute(accountEntity, dto);
+    return DefaultResponseDto.create('Deposit completed successfully');
+  }
+
+  @Post('withdraws')
+  @SwaggerOperation('Withdraw an amount from the current user account')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerUnprocessableEntity('Insufficient account balance')
   @SwaggerInternalServerError()
-  public async updateBalance(
+  public async withdraw(
     @CurrentUser() { sub }: AccessTokenPayload,
-    @Body() dto: ValueDto,
+    @Body() dto: AmountDto,
   ): Promise<DefaultResponseDto> {
     const accountEntity = await this.findAccountByOwnerIdUseCase.execute(sub);
-    await this.updateAccountBalanceUseCase.execute(accountEntity, dto);
-    return DefaultResponseDto.create('Account balance updated successfully');
+    await this.withdrawUseCase.execute(accountEntity, dto);
+    return DefaultResponseDto.create('Withdrawal completed successfully');
   }
 }
