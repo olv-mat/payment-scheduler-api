@@ -20,7 +20,7 @@ export class AuthenticationController {
   ) {}
 
   @Post('/register')
-  @SwaggerOperation('Register user and return the access token')
+  @SwaggerOperation('Register a new user and return an access token')
   @SwaggerConflict('Email already in use')
   @SwaggerInternalServerError()
   public async register(
@@ -32,7 +32,7 @@ export class AuthenticationController {
   }
 
   @Post('/login')
-  @SwaggerOperation('Authenticate user and return the access token')
+  @SwaggerOperation('Authenticate a user and return an access token')
   @SwaggerUnauthorized('Invalid credentials')
   @SwaggerInternalServerError()
   public async login(

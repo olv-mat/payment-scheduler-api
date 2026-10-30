@@ -35,7 +35,7 @@ import { ScheduleResponseDto } from './dtos/schedule-response.dto';
 import { UpdateScheduleDto } from './dtos/update-schedule.dto';
 import { ScheduleResponseMapper } from './mappers/schedule-response.mapper';
 
-@Controller('schedules')
+@Controller('/me/schedules')
 @UseGuards(JwtGuard)
 @SwaggerBearerAuth()
 export class ScheduleController {
@@ -48,8 +48,8 @@ export class ScheduleController {
     private readonly deleteScheduleUseCase: DeleteScheduleUseCase,
   ) {}
 
-  @Get('/me')
-  @SwaggerOperation('Retrieve the current user schedules')
+  @Get()
+  @SwaggerOperation('Retrieve the current user’s schedules')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerInternalServerError()
@@ -84,7 +84,7 @@ export class ScheduleController {
   }
 
   @Patch(':id')
-  @SwaggerOperation('Delete a specific schedule')
+  @SwaggerOperation('Update one of the current user’s schedules')
   @SwaggerBadRequest('At least one field must be provided')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
@@ -98,7 +98,7 @@ export class ScheduleController {
   }
 
   @Delete(':id')
-  @SwaggerOperation('Delete a specific schedule')
+  @SwaggerOperation('Delete one of the current user’s schedules')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Schedule not found')
   @SwaggerInternalServerError()

@@ -33,7 +33,7 @@ import { UserWithAccountResponseDto } from './dtos/user-with-account-response.dt
 import { UserResponseMapper } from './mappers/user-response.mapper';
 import { UserWithAccountResponseMapper } from './mappers/user-with-account-response.mapper';
 
-@Controller('users')
+@Controller()
 @UseGuards(JwtGuard)
 @SwaggerBearerAuth()
 export class UserController {
@@ -45,16 +45,6 @@ export class UserController {
     private readonly deleteUserUseCase: DeleteUserUseCase,
   ) {}
 
-  @Get()
-  @SwaggerOperation('Retrieve all users')
-  @SwaggerUnauthorized('Invalid, expired, or missing token')
-  @SwaggerInternalServerError()
-  public async findAll(): Promise<UserResponseDto[]> {
-    return UserResponseMapper.fromEntities(
-      await this.findAllUsersUseCase.execute(),
-    );
-  }
-
   @Get('/me')
   @SwaggerOperation('Retrieve the current user')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
@@ -64,21 +54,6 @@ export class UserController {
     @CurrentUser() { sub }: AccessTokenPayload,
   ): Promise<UserWithAccountResponseDto> {
     const userEntity = await this.findUserByIdUseCase.execute(sub);
-    return UserWithAccountResponseMapper.fromEntities(
-      userEntity,
-      await this.findAccountByOwnerIdUseCase.execute(userEntity.id),
-    );
-  }
-
-  @Get(':id')
-  @SwaggerOperation('Retrieve a specific user')
-  @SwaggerUnauthorized('Invalid, expired, or missing token')
-  @SwaggerNotFound('User not found')
-  @SwaggerInternalServerError()
-  public async findOne(
-    @Param() { id }: IdDto,
-  ): Promise<UserWithAccountResponseDto> {
-    const userEntity = await this.findUserByIdUseCase.execute(id);
     return UserWithAccountResponseMapper.fromEntities(
       userEntity,
       await this.findAccountByOwnerIdUseCase.execute(userEntity.id),
@@ -110,5 +85,30 @@ export class UserController {
   ): Promise<DefaultResponseDto> {
     await this.deleteUserUseCase.execute(sub);
     return DefaultResponseDto.create('User deleted successfully');
+  }
+
+  @Get('users')
+  @SwaggerOperation('Retrieve all users')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerInternalServerError()
+  public async findAll(): Promise<UserResponseDto[]> {
+    return UserResponseMapper.fromEntities(
+      await this.findAllUsersUseCase.execute(),
+    );
+  }
+
+  @Get('users/:id')
+  @SwaggerOperation('Retrieve a specific user')
+  @SwaggerUnauthorized('Invalid, expired, or missing token')
+  @SwaggerNotFound('User not found')
+  @SwaggerInternalServerError()
+  public async findOne(
+    @Param() { id }: IdDto,
+  ): Promise<UserWithAccountResponseDto> {
+    const userEntity = await this.findUserByIdUseCase.execute(id);
+    return UserWithAccountResponseMapper.fromEntities(
+      userEntity,
+      await this.findAccountByOwnerIdUseCase.execute(userEntity.id),
+    );
   }
 }
