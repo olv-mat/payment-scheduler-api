@@ -1,9 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { CreateUserInput } from '../../domain/types/create-user-input.type';
 import { UpdateUserInput } from '../../domain/types/update-user-input.type';
+import { UserQueryInput } from '../../domain/types/user-query-input.type';
 import { UserMapper } from '../persistence/user.mapper';
 import { UserTypeOrmEntity } from '../persistence/user.typeorm.entity';
 
@@ -14,8 +15,12 @@ export class UserTypeOrmRepository implements UserRepository {
     private readonly userMapper: UserMapper,
   ) {}
 
-  public async findAll(): Promise<UserEntity[]> {
-    const userEntities = await this.userRepository.find();
+  public async findAll(query: UserQueryInput): Promise<UserEntity[]> {
+    const { name } = query;
+    console.log(name);
+    const userEntities = await this.userRepository.find({
+      where: { ...(name && { name: ILike(`%${name}%`) }) },
+    });
     return userEntities.map((userEntity) =>
       this.userMapper.toDomain(userEntity),
     );

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { FindAccountByOwnerIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-owner-id.usecase';
@@ -28,6 +29,7 @@ import { FindAllUsersUseCase } from '../application/use-cases/find-all-users.use
 import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.usecase';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserQueryDto } from './dtos/user-query.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
 import { UserWithAccountResponseDto } from './dtos/user-with-account-response.dto';
 import { UserResponseMapper } from './mappers/user-response.mapper';
@@ -91,9 +93,11 @@ export class UserController {
   @SwaggerOperation('Retrieve all users')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerInternalServerError()
-  public async findAll(): Promise<UserResponseDto[]> {
+  public async findAll(
+    @Query() query: UserQueryDto,
+  ): Promise<UserResponseDto[]> {
     return UserResponseMapper.fromEntities(
-      await this.findAllUsersUseCase.execute(),
+      await this.findAllUsersUseCase.execute(query),
     );
   }
 
