@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { FindAccountByIdUseCase } from 'src/modules/account/application/use-cases/find-account-by-id.usecase';
@@ -31,6 +32,7 @@ import { DeleteScheduleUseCase } from '../application/use-cases/delete-schedule.
 import { FindSchedulesByPayerIdUseCase } from '../application/use-cases/find-schedules-by-payer-id.usecase';
 import { UpdateScheduleUseCase } from '../application/use-cases/update-schedule.usecase';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
+import { ScheduleQueryDto } from './dtos/schedule-query.dto';
 import { ScheduleResponseDto } from './dtos/schedule-response.dto';
 import { UpdateScheduleDto } from './dtos/update-schedule.dto';
 import { ScheduleResponseMapper } from './mappers/schedule-response.mapper';
@@ -55,10 +57,11 @@ export class ScheduleController {
   @SwaggerInternalServerError()
   public async find(
     @CurrentUser() { sub }: AccessTokenPayload,
+    @Query() query: ScheduleQueryDto,
   ): Promise<ScheduleResponseDto[]> {
     const { id } = await this.findAccountByOwnerIdUseCase.execute(sub);
     return ScheduleResponseMapper.fromEntities(
-      await this.findSchedulesByPayerIdUseCase.execute(id),
+      await this.findSchedulesByPayerIdUseCase.execute(id, query),
     );
   }
 

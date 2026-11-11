@@ -4,6 +4,7 @@ import { ScheduleEntity } from '../../domain/entities/schedule.entity';
 import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 import { ScheduleRepository } from '../../domain/repositories/schedule.repository';
 import { CreateScheduleInput } from '../../domain/types/create-schedule-input';
+import { ScheduleQueryInput } from '../../domain/types/schedule-query-input';
 import { UpdateScheduleInput } from '../../domain/types/update-schedule-input';
 import { SCHEDULE_RELATIONS, ScheduleMapper } from './schedule.mapper';
 import { ScheduleTypeOrmEntity } from './schedule.typeorm.entity';
@@ -23,9 +24,13 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     return scheduleEntity ? this.scheduleMapper.toDomain(scheduleEntity) : null;
   }
 
-  public async findByPayerId(payerId: string): Promise<ScheduleEntity[]> {
+  public async findByPayerId(
+    payerId: string,
+    query: ScheduleQueryInput,
+  ): Promise<ScheduleEntity[]> {
+    const { status } = query;
     const scheduleEntities = await this.scheduleRepository.find({
-      where: { payer: { id: payerId } },
+      where: { payer: { id: payerId }, ...(status && { status: status }) },
       relations: SCHEDULE_RELATIONS,
     });
     return scheduleEntities.map((scheduleEntity) =>
