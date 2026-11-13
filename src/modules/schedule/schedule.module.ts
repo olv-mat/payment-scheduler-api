@@ -24,7 +24,7 @@ import { ScheduleController } from './presentation/schedule.controller';
     BullModule.registerQueue({
       name: SCHEDULE_QUEUE,
       defaultJobOptions: {
-        removeOnComplete: true,
+        removeOnComplete: false,
         removeOnFail: false,
       },
     }),
