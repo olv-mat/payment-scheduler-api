@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ScheduleStatus } from '../../domain/enums/schedule-status.enum';
 import { ScheduleNotFoundError } from '../../domain/errors/schedule-not-found.error';
 import { ScheduleRepository } from '../../domain/repositories/schedule.repository';
 
@@ -10,5 +11,9 @@ export class DeleteScheduleUseCase {
     const scheduleEntity = await this.scheduleRepository.findById(id);
     if (!scheduleEntity) throw new ScheduleNotFoundError();
     await this.scheduleRepository.delete(scheduleEntity.id);
+    await this.scheduleRepository.setStatus(
+      scheduleEntity.id,
+      ScheduleStatus.CANCELED,
+    );
   }
 }

@@ -66,6 +66,6 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
   }
 
   public async delete(id: string): Promise<void> {
-    await this.scheduleRepository.delete(id);
+    await this.scheduleRepository.softDelete(id);
   }
 }
