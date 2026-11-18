@@ -32,6 +32,7 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
     const scheduleEntities = await this.scheduleRepository.find({
       where: { payer: { id: payerId }, ...(status && { status: status }) },
       relations: SCHEDULE_RELATIONS,
+      withDeleted: true,
     });
     return scheduleEntities.map((scheduleEntity) =>
       this.scheduleMapper.toDomain(scheduleEntity),
