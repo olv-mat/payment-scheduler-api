@@ -14,6 +14,7 @@ import { JwtGuard } from 'src/modules/authentication/infrastructure/jwt.guard';
 import { CurrentUser } from 'src/shared/presentation/decorators/current-user.decorator';
 import { DefaultResponseDto } from 'src/shared/presentation/dtos/default-response.dto';
 import { IdDto } from 'src/shared/presentation/dtos/id.dto';
+import { PaginatedResponseDto } from 'src/shared/presentation/dtos/paginated-response.dto';
 import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
 import {
   SwaggerBadRequest,
@@ -30,7 +31,6 @@ import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.us
 import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserQueryDto } from './dtos/user-query.dto';
-import { UserResponseDto } from './dtos/user-response.dto';
 import { UserWithAccountResponseDto } from './dtos/user-with-account-response.dto';
 import { UserResponseMapper } from './mappers/user-response.mapper';
 import { UserWithAccountResponseMapper } from './mappers/user-with-account-response.mapper';
@@ -95,10 +95,14 @@ export class UserController {
   @SwaggerInternalServerError()
   public async findAll(
     @Query() query: UserQueryDto,
-  ): Promise<UserResponseDto[]> {
-    return UserResponseMapper.fromEntities(
-      await this.findAllUsersUseCase.execute(query),
-    );
+  ): Promise<PaginatedResponseDto> {
+    const [userEntities, total] = await this.findAllUsersUseCase.execute(query);
+    return PaginatedResponseDto.create({
+      items: UserResponseMapper.fromEntities(userEntities),
+      total: total,
+      offset: query.offset,
+      limit: query.limit,
+    });
   }
 
   @Get('users/:id')

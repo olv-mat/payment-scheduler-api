@@ -9,6 +9,7 @@ type PaginationMetaProperties = {
   total: number;
   offset: number;
   limit: number;
+  hasMore: boolean;
 };
 
 export class PaginatedResponseDto {
@@ -17,18 +18,15 @@ export class PaginatedResponseDto {
 
   private constructor(properties: PaginatedResponseProperties) {
     const { items, total, offset, limit } = properties;
+    const hasMore = offset + items.length < total;
     this.items = items;
-    this.meta = { total, offset, limit };
+    this.meta = { total, offset, limit, hasMore };
   }
 
   public static create(
     properties: PaginatedResponseProperties,
   ): PaginatedResponseDto {
-    return new PaginatedResponseDto({
-      items: properties.items,
-      total: properties.total,
-      offset: properties.offset,
-      limit: properties.limit,
-    });
+    const { items, total, offset, limit } = properties;
+    return new PaginatedResponseDto({ items, total, offset, limit });
   }
 }

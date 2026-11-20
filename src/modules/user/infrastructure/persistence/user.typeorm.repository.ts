@@ -15,15 +15,18 @@ export class UserTypeOrmRepository implements UserRepository {
     private readonly userMapper: UserMapper,
   ) {}
 
-  public async findAll(query: UserQueryInput): Promise<UserEntity[]> {
-    const { name } = query;
-    console.log(name);
-    const userEntities = await this.userRepository.find({
+  public async findAll(query: UserQueryInput): Promise<[UserEntity[], number]> {
+    const { name, offset, limit } = query;
+    const [userEntities, total] = await this.userRepository.findAndCount({
       where: { ...(name && { name: ILike(`%${name}%`) }) },
+      order: { createdAt: 'DESC', id: 'DESC' },
+      skip: offset,
+      take: limit,
     });
-    return userEntities.map((userEntity) =>
-      this.userMapper.toDomain(userEntity),
-    );
+    return [
+      userEntities.map((userEntity) => this.userMapper.toDomain(userEntity)),
+      total,
+    ];
   }
 
   public async findById(id: string): Promise<UserEntity | null> {

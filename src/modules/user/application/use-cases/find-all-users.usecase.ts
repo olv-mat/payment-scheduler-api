@@ -7,7 +7,7 @@ import { UserQueryInput } from '../../domain/types/user-query-input.type';
 export class FindAllUsersUseCase {
   constructor(private readonly userRepository: UserRepository) {}
 
-  public execute(query: UserQueryInput): Promise<UserEntity[]> {
+  public execute(query: UserQueryInput): Promise<[UserEntity[], number]> {
     return this.userRepository.findAll(query);
   }
 }
