@@ -1,13 +1,17 @@
+import { applyDecorators, Type } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiConflictResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
 
 export const SwaggerOperation = (
@@ -21,6 +25,33 @@ export const SwaggerOperation = (
 
 export const SwaggerBearerAuth = () => {
   return ApiBearerAuth();
+};
+
+export const SwaggerPaginatedResponse = (model: Type<unknown>) => {
+  return applyDecorators(
+    ApiExtraModels(model),
+    ApiOkResponse({
+      schema: {
+        required: ['items', 'meta'],
+        properties: {
+          items: {
+            type: 'array',
+            items: { $ref: getSchemaPath(model) },
+          },
+          meta: {
+            type: 'object',
+            required: ['total', 'offset', 'limit', 'hasMore'],
+            properties: {
+              total: { type: 'number', example: 100 },
+              offset: { type: 'number', example: 0 },
+              limit: { type: 'number', example: 10 },
+              hasMore: { type: 'boolean', example: true },
+            },
+          },
+        },
+      },
+    }),
+  );
 };
 
 export const SwaggerBadRequest = (message: string) => {

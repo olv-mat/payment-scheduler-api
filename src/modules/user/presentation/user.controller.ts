@@ -23,6 +23,7 @@ import {
   SwaggerInternalServerError,
   SwaggerNotFound,
   SwaggerOperation,
+  SwaggerPaginatedResponse,
   SwaggerUnauthorized,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 import { DeleteUserUseCase } from '../application/use-cases/delete-user.usecase';
@@ -31,6 +32,7 @@ import { FindUserByIdUseCase } from '../application/use-cases/find-user-by-id.us
 import { UpdateUserUseCase } from '../application/use-cases/update-user.usecase';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserQueryDto } from './dtos/user-query.dto';
+import { UserResponseDto } from './dtos/user-response.dto';
 import { UserWithAccountResponseDto } from './dtos/user-with-account-response.dto';
 import { UserResponseMapper } from './mappers/user-response.mapper';
 import { UserWithAccountResponseMapper } from './mappers/user-with-account-response.mapper';
@@ -90,7 +92,8 @@ export class UserController {
   }
 
   @Get('users')
-  @SwaggerOperation('Retrieve all users')
+  @SwaggerOperation('Retrieve all users with pagination and filters')
+  @SwaggerPaginatedResponse(UserResponseDto)
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerInternalServerError()
   public async findAll(
