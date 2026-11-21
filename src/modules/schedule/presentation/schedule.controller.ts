@@ -76,7 +76,7 @@ export class ScheduleController {
   }
 
   @Post()
-  @SwaggerOperation('Create and enqueue a schedule for the current user')
+  @SwaggerOperation('Create and enqueue a schedule for the current user.')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerUnprocessableEntity('Payer and receiver must be different accounts')
@@ -97,7 +97,7 @@ export class ScheduleController {
   }
 
   @Patch(':id')
-  @SwaggerOperation('Update one of the current user’s schedules')
+  @SwaggerOperation('Update one of the current user’s schedules.')
   @SwaggerBadRequest('At least one field must be provided')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
@@ -111,7 +111,7 @@ export class ScheduleController {
   }
 
   @Delete(':id')
-  @SwaggerOperation('Delete one of the current user’s schedules')
+  @SwaggerOperation('Delete one of the current user’s schedules.')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Schedule not found')
   @SwaggerInternalServerError()

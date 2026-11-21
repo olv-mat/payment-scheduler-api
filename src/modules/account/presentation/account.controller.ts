@@ -27,7 +27,7 @@ export class AccountController {
   ) {}
 
   @Post('deposits')
-  @SwaggerOperation('Deposit an amount into the current user’s account')
+  @SwaggerOperation('Deposit an amount into the current user’s account.')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerInternalServerError()
@@ -41,7 +41,7 @@ export class AccountController {
   }
 
   @Post('withdrawals')
-  @SwaggerOperation('Withdraw an amount from the current user’s account')
+  @SwaggerOperation('Withdraw an amount from the current user’s account.')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerUnprocessableEntity('Insufficient account balance')

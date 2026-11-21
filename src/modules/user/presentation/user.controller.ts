@@ -50,7 +50,7 @@ export class UserController {
   ) {}
 
   @Get('/me')
-  @SwaggerOperation('Retrieve the current user')
+  @SwaggerOperation('Retrieve the current user.')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not found')
   @SwaggerInternalServerError()
@@ -65,7 +65,7 @@ export class UserController {
   }
 
   @Patch('/me')
-  @SwaggerOperation('Update the current user')
+  @SwaggerOperation('Update the current user.')
   @SwaggerBadRequest('At least one field must be provided')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
@@ -80,7 +80,7 @@ export class UserController {
   }
 
   @Delete('/me')
-  @SwaggerOperation('Delete the current user')
+  @SwaggerOperation('Delete the current user.')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not Found')
   @SwaggerInternalServerError()
@@ -109,7 +109,7 @@ export class UserController {
   }
 
   @Get('users/:id')
-  @SwaggerOperation('Retrieve a specific user')
+  @SwaggerOperation('Retrieve a specific user.')
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('User not found')
   @SwaggerInternalServerError()
