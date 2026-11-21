@@ -92,7 +92,7 @@ export class UserController {
   }
 
   @Get('users')
-  @SwaggerOperation('Retrieve all users with pagination and filters')
+  @SwaggerOperation('Retrieve all users, with pagination and filters.')
   @SwaggerPaginatedResponse(UserResponseDto)
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerInternalServerError()

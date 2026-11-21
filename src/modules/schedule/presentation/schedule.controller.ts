@@ -22,6 +22,7 @@ import {
   SwaggerInternalServerError,
   SwaggerNotFound,
   SwaggerOperation,
+  SwaggerPaginatedResponse,
   SwaggerUnauthorized,
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
@@ -52,7 +53,10 @@ export class ScheduleController {
   ) {}
 
   @Get()
-  @SwaggerOperation('Retrieve the current user’s schedules')
+  @SwaggerOperation(
+    'Retrieve the current user’s schedules, with pagination and filters.',
+  )
+  @SwaggerPaginatedResponse(ScheduleResponseDto)
   @SwaggerUnauthorized('Invalid, expired, or missing token')
   @SwaggerNotFound('Account not found')
   @SwaggerInternalServerError()
