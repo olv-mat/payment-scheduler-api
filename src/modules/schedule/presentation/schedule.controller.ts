@@ -26,6 +26,7 @@ import {
   SwaggerUnprocessableEntity,
 } from 'src/shared/presentation/swagger/swagger.decorators';
 
+import { PaginatedResponseDto } from 'src/shared/presentation/dtos/paginated-response.dto';
 import { AtLeastOneFieldPipe } from 'src/shared/presentation/pipes/at-least-one-field.pipe';
 import { CreateScheduleUseCase } from '../application/use-cases/create-schedule.usecase';
 import { DeleteScheduleUseCase } from '../application/use-cases/delete-schedule.usecase';
@@ -58,11 +59,16 @@ export class ScheduleController {
   public async find(
     @CurrentUser() { sub }: AccessTokenPayload,
     @Query() query: ScheduleQueryDto,
-  ): Promise<ScheduleResponseDto[]> {
+  ): Promise<PaginatedResponseDto> {
     const { id } = await this.findAccountByOwnerIdUseCase.execute(sub);
-    return ScheduleResponseMapper.fromEntities(
-      await this.findSchedulesByPayerIdUseCase.execute(id, query),
-    );
+    const [scheduleEntities, total] =
+      await this.findSchedulesByPayerIdUseCase.execute(id, query);
+    return PaginatedResponseDto.create({
+      items: ScheduleResponseMapper.fromEntities(scheduleEntities),
+      total: total,
+      offset: query.offset,
+      limit: query.limit,
+    });
   }
 
   @Post()

@@ -10,7 +10,7 @@ export class FindSchedulesByPayerIdUseCase {
   public async execute(
     payerId: string,
     query: ScheduleQueryInput,
-  ): Promise<ScheduleEntity[]> {
+  ): Promise<[ScheduleEntity[], number]> {
     return await this.scheduleRepository.findByPayerId(payerId, query);
   }
 }

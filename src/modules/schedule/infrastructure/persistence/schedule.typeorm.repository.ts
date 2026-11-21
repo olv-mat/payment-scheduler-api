@@ -27,16 +27,23 @@ export class ScheduleTypeOrmRepository implements ScheduleRepository {
   public async findByPayerId(
     payerId: string,
     query: ScheduleQueryInput,
-  ): Promise<ScheduleEntity[]> {
-    const { status } = query;
-    const scheduleEntities = await this.scheduleRepository.find({
-      where: { payer: { id: payerId }, ...(status && { status: status }) },
-      relations: SCHEDULE_RELATIONS,
-      withDeleted: true,
-    });
-    return scheduleEntities.map((scheduleEntity) =>
-      this.scheduleMapper.toDomain(scheduleEntity),
-    );
+  ): Promise<[ScheduleEntity[], number]> {
+    const { status, limit, offset } = query;
+    const [scheduleEntities, total] =
+      await this.scheduleRepository.findAndCount({
+        where: { payer: { id: payerId }, ...(status && { status: status }) },
+        relations: SCHEDULE_RELATIONS,
+        withDeleted: true,
+        order: { createdAt: 'DESC', id: 'DESC' },
+        skip: offset,
+        take: limit,
+      });
+    return [
+      scheduleEntities.map((scheduleEntity) =>
+        this.scheduleMapper.toDomain(scheduleEntity),
+      ),
+      total,
+    ];
   }
 
   public async create(

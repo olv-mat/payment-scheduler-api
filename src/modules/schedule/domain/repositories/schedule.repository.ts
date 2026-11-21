@@ -9,7 +9,7 @@ export abstract class ScheduleRepository {
   public abstract findByPayerId(
     payerId: string,
     query: ScheduleQueryInput,
-  ): Promise<ScheduleEntity[]>;
+  ): Promise<[ScheduleEntity[], number]>;
   public abstract create(
     payerId: string,
     input: CreateScheduleInput,
