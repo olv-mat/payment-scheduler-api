@@ -1,5 +1,5 @@
 import { validate } from 'class-validator';
-import { makeUpdateUserDto } from './factories/update-user.dto.factory';
+import { makeUpdateUserDto } from '../../test/factories/update-user.dto.factory';
 
 describe('UpdateUserDto', () => {
   it('should accept when all fields are valid', async () => {

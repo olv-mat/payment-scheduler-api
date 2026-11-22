@@ -1,5 +1,6 @@
 import { validate } from 'class-validator';
-import { makeUserQueryDto } from './factories/user-query.dto.factory';
+import 'reflect-metadata';
+import { makeUserQueryDto } from '../../test/factories/user-query.dto.factory';
 
 describe('UserQueryDto', () => {
   it('should accept when all fields are valid', async () => {

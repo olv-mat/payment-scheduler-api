@@ -1,5 +1,5 @@
 import { validate } from 'class-validator';
-import { makeCreateUserDto } from './factories/create-user.dto.factory';
+import { makeCreateUserDto } from '../../test/factories/create-user.dto.factory';
 
 describe('CreateUserDto', () => {
   it('should accept when is valid', async () => {
