@@ -42,11 +42,11 @@ import { UserWithAccountResponseMapper } from './mappers/user-with-account-respo
 @SwaggerBearerAuth()
 export class UserController {
   constructor(
-    private readonly findAllUsersUseCase: FindAllUsersUseCase,
     private readonly findUserByIdUseCase: FindUserByIdUseCase,
     private readonly findAccountByOwnerIdUseCase: FindAccountByOwnerIdUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
+    private readonly findAllUsersUseCase: FindAllUsersUseCase,
   ) {}
 
   @Get('/me')
